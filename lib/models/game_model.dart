@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'card_assets.dart';
 import 'card_model.dart';
+import 'game_settings.dart';
 import 'game_state.dart';
 
 class GameModel {
@@ -17,11 +18,10 @@ class GameModel {
   });
 
   static GameModel newGame() {
-    // Initialize a 3 x 2 game board with two copies of each of three cards.
+    // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
-    int numberOfUniqueCards = 3;
     List<String> cardPaths =
-        CardAssets().getCardAssetPaths(numberOfUniqueCards);
+        CardAssets().getCardAssetPaths(GameSettings.numberOfUniqueCards);
     List<CardModel> cards = [];
     for (String cardPath in cardPaths) {
       cards.add(CardModel(cardFace: cardPath, isFaceUp: true));

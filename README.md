@@ -6,11 +6,12 @@ The game of Memory, implemented in Flutter
 - DONE: Create skeleton app from starter project: HomePage and "New game" button
 - DONE: Create card and game model classes
 - DONE: Create game state machine class
-- Create GamePage widget (stateful, holding game state)
-- Implement routing from HomePage to GamePage
 - DONE: Add card image assets: SVG icons from <a href="https://uxwing.com/">uxwing</a>.
 - DONE: Randomize which images are used in each game.
 - DONE: Add flutter_svg package.
+- DONE: Extract game settings to a single class; use a constant 2x3 game grid for now.
+- Create GamePage widget (stateful, holding game state)
+- Implement routing from HomePage to GamePage
 - Create Card widget - stateless simple version, no click handling
 - Implement initial game state: card generation and display all cards face-up
 - Implement timed transition to in-play game state: all cards face-down
