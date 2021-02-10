@@ -1,5 +1,5 @@
 class CardAssets {
-  List<String> _cardPathNames = [
+  static final List<String> _cardPathNames = [
     'assets/svg/bear-animal.svg',
     'assets/svg/bee-honey.svg',
     'assets/svg/butterfly.svg',
@@ -22,9 +22,15 @@ class CardAssets {
     'assets/svg/worm.svg',
   ];
 
-  List<String> getCardAssetPaths(int n) {
+  static List<String> getCardAssetPaths(int n) {
     List<String> randomizedList = List<String>.from(_cardPathNames);
     randomizedList.shuffle();
-    return randomizedList.take(n);
+    return randomizedList.take(n).toList(growable: false);
+  }
+
+  static String getCardName(String cardPath) {
+    // Heuristic approach; should improve by mapping card paths to
+    // internationalizable string keys.
+    return cardPath.substring(12, cardPath.length - 4);
   }
 }

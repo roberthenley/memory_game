@@ -21,11 +21,11 @@ class GameModel {
     // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
     List<String> cardPaths =
-        CardAssets().getCardAssetPaths(GameSettings.numberOfUniqueCards);
+        CardAssets.getCardAssetPaths(GameSettings.numberOfUniqueCards);
     List<CardModel> cards = [];
     for (String cardPath in cardPaths) {
-      cards.add(CardModel(cardFace: cardPath, isFaceUp: true));
-      cards.add(CardModel(cardFace: cardPath, isFaceUp: true));
+      cards.add(CardModel(cardFaceAssetPath: cardPath, isFaceUp: true));
+      cards.add(CardModel(cardFaceAssetPath: cardPath, isFaceUp: true));
     }
     cards.shuffle();
     return GameModel(

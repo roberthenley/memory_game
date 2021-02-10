@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'game_page.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,13 @@ class HomePage extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // TODO: Route to GamePage
+            // Route to GamePage
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GamePage(),
+              ),
+            );
           },
         ),
       ),

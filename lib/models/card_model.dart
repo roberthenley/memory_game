@@ -6,14 +6,14 @@ class CardModel {
     this.isMatched = false,
     this.isSelectable = false,
     this.isSelected = false,
-    @required this.cardFace,
+    @required this.cardFaceAssetPath,
   });
 
   final bool isFaceUp;
   final bool isMatched;
   final bool isSelectable;
   final bool isSelected;
-  final String cardFace;
+  final String cardFaceAssetPath;
 
   CardModel copyWith({
     bool isFaceUp,
@@ -27,6 +27,6 @@ class CardModel {
         isMatched: isMatched ?? this.isMatched,
         isSelectable: isSelectable ?? this.isSelectable,
         isSelected: isSelected ?? this.isSelected,
-        cardFace: cardFace ?? this.cardFace,
+        cardFaceAssetPath: cardFace ?? this.cardFaceAssetPath,
       );
 }
