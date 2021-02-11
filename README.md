@@ -15,13 +15,14 @@ The game of Memory, implemented in Flutter
 - DONE: Create Card widget - stateless simple version, no click handling
 - DONE: Implement initial game state: card generation and display all cards face-up
 - DONE: Implement timed transition to in-play game state: all cards face-down
-- Implement card click handling: transition to 1-card up state
-- Implement transition to 2-card up state and display matched-card indicators (if cards match)
-- Implement timed transition to unmatched cards face-down state
-- Implement transition to "won" state 
-- Implement "won" state display and routing back to HomePage
-- Implement game timer display and "lost" state
-- Implement "lost" state display and routing back to HomePage
+- DONE: Implement card click handling: transition to 1-card up state
+- DONE: Implement transition to 2-card up state and set matched-card indicators (if cards match)
+- DONE: Display matched card indicator (colored border) on card widgets
+- DONE: Implement timed transition to unmatched cards face-down state
+- DONE: Implement transition to "won" state 
+- DONE: Implement "won" state display and routing back to HomePage
+- Implement game timer, timer display, and "lost" state
+- IN PROGRESS: Implement "lost" state display and routing back to HomePage
 - Fix GamePage and CardView so they scale properly to the display without scrolling
 - Game state machine unit tests
 - Card widget widget tests
