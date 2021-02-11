@@ -4,5 +4,6 @@ class GameSettings {
   static const int numberOfCards = layoutHeight * layoutWidth;
   static int numberOfUniqueCards = (numberOfCards / 2).floor();
   static const int initialFaceUpSeconds = 5;
-  static const int nonMatchingCardsFaceUpSeconds = 5;
+  static const int nonMatchingCardsFaceUpSeconds = 2;
+  static const int gameDurationSeconds = numberOfCards * 8;
 }

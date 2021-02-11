@@ -22,6 +22,8 @@ class CardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String cardName = CardAssets.getCardName(cardModel.cardFaceAssetPath) +
+        (cardModel.isMatched ? ' matched' : '');
     return InkWell(
       child: Card(
         margin: EdgeInsets.all(8.0),
@@ -39,9 +41,7 @@ class CardView extends StatelessWidget {
           child: cardModel.isFaceUp
               ? SvgPicture.asset(
                   cardModel.cardFaceAssetPath,
-                  semanticsLabel: CardAssets.getCardName(
-                    cardModel.cardFaceAssetPath,
-                  ),
+                  semanticsLabel: cardName,
                 )
               : faceDownCard,
         ),

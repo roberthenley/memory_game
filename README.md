@@ -21,9 +21,12 @@ The game of Memory, implemented in Flutter
 - DONE: Implement timed transition to unmatched cards face-down state
 - DONE: Implement transition to "won" state 
 - DONE: Implement "won" state display and routing back to HomePage
-- Implement game timer, timer display, and "lost" state
-- IN PROGRESS: Implement "lost" state display and routing back to HomePage
-- Fix GamePage and CardView so they scale properly to the display without scrolling
+- DONE: Implement game timer, timer display, and "lost" state
+- DONE: Implement "lost" state display and routing back to HomePage
+- IN PROGRESS: Think through game accessibility - non-trivial, since this is a visual game with a timed element
+- IN PROGRESS: Fix card face semantic labels
+- Accessibility test/fix: TalkBack
+- Accessibility test/fix: keyboard access
 - Game state machine unit tests
 - Card widget widget tests
 - Flutter driver tests
@@ -35,12 +38,12 @@ The game of Memory, implemented in Flutter
 - Use bdd_widget_tests package for widget testing in Gherkin?
 - Performance: will rebuilds on card model state transition that don't effect visibility cost too much?
 
-## Additional features 
+## Additional features
+- Fix GamePage and CardView so they scale properly to the display without scrolling
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Adjustable card layout / card count
 - Animate card flipping (consider leveraging flip_card package)
 - Internationalization
 - Persistent application state
 - Transition to Null Safety
-- Accessibility -- to the extent possible; this is a visual game with a timed element
 

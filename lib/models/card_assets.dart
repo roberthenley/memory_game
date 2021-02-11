@@ -30,7 +30,11 @@ class CardAssets {
 
   static String getCardName(String cardPath) {
     // Heuristic approach; should improve by mapping card paths to
-    // internationalizable string keys.
-    return cardPath.substring(12, cardPath.length - 4);
+    // internationalizable string keys and appropriate default text.
+    // print(
+    //     'getCardName: ${cardPath.substring(11, cardPath.length - 4).replaceAll(RegExp('-'), ' ')}');
+    return cardPath
+        .substring(11, cardPath.length - 4)
+        .replaceAll(RegExp('-'), ' ');
   }
 }
