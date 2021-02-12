@@ -27,8 +27,8 @@ class GameStateMachine {
     //   '_nextState: current state: ${model.state}, new state: $newState, cardSelected: ${cardSelected?.cardFaceAssetPath ?? "null"}',
     // );
 
-    if (model.state == GameState.NEW_GAME &&
-        newState == GameState.NO_CARDS_SELECTED) {
+    if (model.state == GameState.newGame &&
+        newState == GameState.noCardsSelected) {
       // print('_nextState case 1: transition to cards face-down');
       // Turn all cards face down and make them selectable.
       return model.copyWithCardFlags(
@@ -37,39 +37,39 @@ class GameStateMachine {
         isSelectable: true,
       );
     }
-    if (model.state == GameState.NO_CARDS_SELECTED && cardSelected != null) {
+    if (model.state == GameState.noCardsSelected && cardSelected != null) {
       // print('_nextState case 2: first card selection');
       return _handleFirstCardSelection(cardSelected, model);
     }
-    if (model.state == GameState.ONE_CARD_SELECTED && cardSelected != null) {
+    if (model.state == GameState.oneCardSelected && cardSelected != null) {
       // print('_nextState case 3: second card selection');
       return _handleSecondCardSelection(model, cardSelected);
     }
-    if (model.state == GameState.TWO_CARDS_SELECTED_NOT_MATCHING &&
+    if (model.state == GameState.twoCardsSelectedNotMatching &&
         cardSelected != null) {
       // print(
       //     '_nextState case 4: selected a card while 2 non-matching cards are displayed');
       return _handleCardSelectionWhileNonMatchingCardsDisplayed(
           model, cardSelected);
     }
-    if (model.state == GameState.TWO_CARDS_SELECTED_NOT_MATCHING &&
-        newState == GameState.NO_CARDS_SELECTED) {
+    if (model.state == GameState.twoCardsSelectedNotMatching &&
+        newState == GameState.noCardsSelected) {
       // print('_nextState case 5: flip 2 non-matching cards face-down');
       return _handleFlippingNonMatchingCardsFaceDown(model, newState);
     }
-    if (model.state == GameState.WON) {
+    if (model.state == GameState.wonGame) {
       // print('_nextState case 6: game won already, no-op');
       return model; // No-op
     }
-    if (newState == GameState.LOST) {
-      if (model.state == GameState.LOST) {
+    if (newState == GameState.lostGame) {
+      if (model.state == GameState.lostGame) {
         // print('_nextState case 7: game lost already, no-op');
         return model; // No-op
       }
       // print('_nextState case 8: game was just lost');
       // Flip all cards face-up and unselectable.
       return model.copyWithCardFlags(
-        newState: GameState.LOST,
+        newState: GameState.lostGame,
         isFaceUp: true,
         isSelectable: false,
       );
@@ -87,7 +87,7 @@ class GameStateMachine {
     CardModel newCard = cardSelected.copyWith(
         isFaceUp: true, isSelected: true, isSelectable: false);
     return model.copyWithNewCards(
-      newState: GameState.ONE_CARD_SELECTED,
+      newState: GameState.oneCardSelected,
       replacementCards: {cardSelected: newCard},
     );
   }
@@ -120,8 +120,8 @@ class GameStateMachine {
     if (isMatch) {
       GameState newState =
           model.cardMatchCount + 1 == GameSettings.numberOfUniqueCards
-              ? GameState.WON
-              : GameState.NO_CARDS_SELECTED;
+              ? GameState.wonGame
+              : GameState.noCardsSelected;
       // print('_handleSecondCardSelection: isMatch; new game state = $newState');
       return model.copyWithNewCards(
         newState: newState,
@@ -139,7 +139,7 @@ class GameStateMachine {
       // print(
       //     '_handleSecondCardSelection: isMatch false; new game state = TWO_CARDS_SELECTED_NOT_MATCHING');
       return model.copyWithNewCards(
-        newState: GameState.TWO_CARDS_SELECTED_NOT_MATCHING,
+        newState: GameState.twoCardsSelectedNotMatching,
         replacementCards: {cardSelected: newCardSelected},
         newMatchCount: model.cardMatchCount + (isMatch ? 2 : 0),
       );
@@ -177,7 +177,7 @@ class GameStateMachine {
     //     '_handleCardSelectionWhileNonMatchingCardsDisplayed new card is ${cardSelected.cardFaceAssetPath}');
     replacementCards.putIfAbsent(cardSelected, () => newCard);
     return model.copyWithNewCards(
-      newState: GameState.ONE_CARD_SELECTED,
+      newState: GameState.oneCardSelected,
       replacementCards: replacementCards,
     );
   }

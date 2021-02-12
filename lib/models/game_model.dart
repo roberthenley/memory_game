@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'card_assets.dart';
+import 'card_faces.dart';
 import 'card_model.dart';
 import 'game_settings.dart';
 import 'game_state.dart';
@@ -9,7 +9,6 @@ class GameModel {
   final List<CardModel> cards;
   final GameState state;
   final int cardMatchCount;
-  // TODO: Game timer
 
   GameModel({
     @required this.cards,
@@ -21,7 +20,7 @@ class GameModel {
     // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
     List<String> cardPaths =
-        CardAssets.getCardAssetPaths(GameSettings.numberOfUniqueCards);
+        CardFaces.getCardAssetPaths(GameSettings.numberOfUniqueCards);
     List<CardModel> cards = [];
     for (String cardPath in cardPaths) {
       cards.add(CardModel(cardFaceAssetPath: cardPath, isFaceUp: true));
@@ -30,7 +29,7 @@ class GameModel {
     cards.shuffle();
     return GameModel(
       cards: cards,
-      state: GameState.NEW_GAME,
+      state: GameState.newGame,
       cardMatchCount: 0,
     );
   }
@@ -44,7 +43,7 @@ class GameModel {
     bool isSelected,
   }) {
     List<CardModel> newCards = [];
-    for (CardModel card in this.cards) {
+    for (CardModel card in cards) {
       newCards.add(card.copyWith(
         isFaceUp: isFaceUp,
         isMatched: isMatched,
@@ -54,8 +53,8 @@ class GameModel {
     }
     return GameModel(
       cards: newCards,
-      state: newState ?? this.state,
-      cardMatchCount: newCardMatchCount ?? this.cardMatchCount,
+      state: newState ?? state,
+      cardMatchCount: newCardMatchCount ?? cardMatchCount,
     );
   }
 
@@ -66,9 +65,9 @@ class GameModel {
   }) {
     // replace the modified cards and set the new game state
     return GameModel(
-      cards: replaceCardsInList(this.cards, replacementCards),
+      cards: replaceCardsInList(cards, replacementCards),
       state: newState,
-      cardMatchCount: newMatchCount ?? this.cardMatchCount,
+      cardMatchCount: newMatchCount ?? cardMatchCount,
     );
   }
 
@@ -95,11 +94,11 @@ class GameModel {
   }
 
   CardModel getSelectedCard() {
-    return this.cards.firstWhere((element) => element.isSelected);
+    return cards.firstWhere((element) => element.isSelected);
   }
 
   Iterable<CardModel> getAllSelectedCards() {
-    return this.cards.where((element) => element.isSelected);
+    return cards.where((element) => element.isSelected);
   }
 
   GameModel copyWith({

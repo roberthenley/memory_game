@@ -19,16 +19,16 @@ The game of Memory, implemented in Flutter
 - DONE: Implement transition to 2-card up state and set matched-card indicators (if cards match)
 - DONE: Display matched card indicator (colored border) on card widgets
 - DONE: Implement timed transition to unmatched cards face-down state
-- DONE: Implement transition to "won" state 
-- DONE: Implement "won" state display and routing back to HomePage
-- DONE: Implement game timer, timer display, and "lost" state
-- DONE: Implement "lost" state display and routing back to HomePage
-- IN PROGRESS: Think through game accessibility - non-trivial, since this is a visual game with a timed element
-- IN PROGRESS: Fix card face semantic labels
-- Accessibility test/fix: TalkBack
+- DONE: Implement transition to "wonGame" state 
+- DONE: Implement "wonGame" state display and routing back to HomePage
+- DONE: Implement game timer, timer display, and "lostGame" state
+- DONE: Implement "lostGame" state display and routing back to HomePage
+- DONE: Think through game accessibility - non-trivial, since this is a visual game with a timed element
+- DONE: Fix card face semantic labels; add state change announcements; disable game timer when screen reader in use
+- DONE: Accessibility test/fix: TalkBack
 - Accessibility test/fix: keyboard access
 - Game state machine unit tests
-- Card widget widget tests
+- Widget tests for CardView widget, ScoreDisplayView, and GameBoardView
 - Flutter driver tests
 
 ## Potential refactorings / design decisions TBD
@@ -38,10 +38,11 @@ The game of Memory, implemented in Flutter
 - Use bdd_widget_tests package for widget testing in Gherkin?
 - Performance: will rebuilds on card model state transition that don't effect visibility cost too much?
 
-## Additional features
+## Additional features TBD
 - Fix GamePage and CardView so they scale properly to the display without scrolling
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Adjustable card layout / card count
+- Golden tests?
 - Animate card flipping (consider leveraging flip_card package)
 - Internationalization
 - Persistent application state
