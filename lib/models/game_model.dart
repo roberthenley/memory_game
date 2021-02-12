@@ -82,8 +82,8 @@ class GameModel {
   // }
 
   static List<CardModel> replaceCardsInList(
-    @required List<CardModel> cards,
-    @required Map<CardModel, CardModel> replacementCards,
+    List<CardModel> cards,
+    Map<CardModel, CardModel> replacementCards,
   ) {
     List<CardModel> newCardList = List<CardModel>.from(cards);
     replacementCards.forEach((CardModel oldCard, CardModel newCard) {
