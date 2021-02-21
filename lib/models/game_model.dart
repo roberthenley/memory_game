@@ -65,13 +65,13 @@ class GameModel {
   }) {
     // replace the modified cards and set the new game state
     return GameModel(
-      cards: replaceCardsInList(cards, replacementCards),
+      cards: _replaceCardsInList(cards, replacementCards),
       state: newState,
       cardMatchCount: newMatchCount ?? cardMatchCount,
     );
   }
 
-  // static List<CardModel> replaceCardInList(
+  // static List<CardModel> _replaceCardInList(
   //     List<CardModel> cards,
   //     CardModel oldCard,
   //     CardModel newCard,) {
@@ -81,7 +81,7 @@ class GameModel {
   //   return newCards;
   // }
 
-  static List<CardModel> replaceCardsInList(
+  static List<CardModel> _replaceCardsInList(
     List<CardModel> cards,
     Map<CardModel, CardModel> replacementCards,
   ) {

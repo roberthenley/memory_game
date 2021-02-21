@@ -1,6 +1,5 @@
 import 'package:memory_game/models/card_model.dart';
 import 'package:memory_game/models/game_model.dart';
-import 'package:memory_game/models/game_settings.dart';
 import 'package:memory_game/models/game_state.dart';
 import 'package:meta/meta.dart';
 
@@ -118,10 +117,9 @@ class GameStateMachine {
     // feature?! The game could skip from IN_GAME_2_CARDS_SELECTED_NO_MATCH to
     // IN_GAME_1_CARD_SELECTED directly...
     if (isMatch) {
-      GameState newState =
-          model.cardMatchCount + 1 == GameSettings.numberOfUniqueCards
-              ? GameState.wonGame
-              : GameState.noCardsSelected;
+      GameState newState = 2 * (model.cardMatchCount + 1) == model.cards.length
+          ? GameState.wonGame
+          : GameState.noCardsSelected;
       // print('_handleSecondCardSelection: isMatch; new game state = $newState');
       return model.copyWithNewCards(
         newState: newState,

@@ -29,4 +29,8 @@ class CardModel {
         isSelected: isSelected ?? this.isSelected,
         cardFaceAssetPath: cardFace ?? this.cardFaceAssetPath,
       );
+
+  String toString() {
+    return 'CardModel(cardFaceAssetPath: $cardFaceAssetPath, isFaceUp: $isFaceUp, isSelectable: $isSelectable, isSelected: $isSelected, isMatched: $isMatched)';
+  }
 }
