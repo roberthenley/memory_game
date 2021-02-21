@@ -44,7 +44,9 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Accessibility test/fix: text scale factor
 - DONE: Accessibility Scanner testing
 - DONE: Game state machine unit tests
-- Refactor singletons into dependency injection for testability 
+- DONE: Refactor GameSettings singleton for testability
+- GameModel unit tests
+- Refactor CardFaces singleton for testability 
 - Widget tests for CardView widget, ScoreDisplayView, and GameBoardView
 - Flutter driver tests / use new integration_test package?
 - Add custom app icon

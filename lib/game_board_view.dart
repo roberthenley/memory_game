@@ -8,7 +8,6 @@ import 'card_view.dart';
 import 'game_logic/game_state_machine.dart';
 import 'models/card_model.dart';
 import 'models/game_model.dart';
-import 'models/game_settings.dart';
 import 'models/game_state.dart';
 
 class GameBoardView extends StatefulWidget {
@@ -18,14 +17,15 @@ class GameBoardView extends StatefulWidget {
 
 class _GameBoardViewState extends State<GameBoardView> {
   GameModel _gameModel;
-  Timer _timer = null;
+  Timer _timer;
   bool _gameStarted = false;
-  int _timeRemaining = GameSettings.gameDurationSeconds;
+  int _timeRemaining;
 
   @override
   void initState() {
     super.initState();
     _gameModel = GameModel.newGame();
+    _timeRemaining = _gameModel.gameDurationSeconds;
   }
 
   @override
@@ -44,7 +44,7 @@ class _GameBoardViewState extends State<GameBoardView> {
         await _announceCardLayout(_gameModel.cards);
       }
 
-      Future.delayed(Duration(seconds: GameSettings.initialFaceUpSeconds), () {
+      Future.delayed(Duration(seconds: _gameModel.initialFaceUpSeconds), () {
         setState(
           () {
             _gameModel = GameStateMachine.setNextState(
@@ -77,7 +77,7 @@ class _GameBoardViewState extends State<GameBoardView> {
             crossAxisCount: _responsiveBoardWidth(),
             padding: EdgeInsets.all(8.0),
             children: List.generate(
-              GameSettings.numberOfCards,
+              _gameModel.numberOfCards,
               (index) {
                 return CardView(
                   cardModel: _gameModel.cards[index],
@@ -100,14 +100,14 @@ class _GameBoardViewState extends State<GameBoardView> {
 
   int _responsiveBoardWidth() {
     return MediaQuery.of(context).orientation == Orientation.portrait
-        ? GameSettings.layoutWidth
-        : GameSettings.layoutHeight;
+        ? _gameModel.layoutWidth
+        : _gameModel.layoutHeight;
   }
 
   int _responsiveBoardHeight() {
     return MediaQuery.of(context).orientation == Orientation.portrait
-        ? GameSettings.layoutHeight
-        : GameSettings.layoutWidth;
+        ? _gameModel.layoutHeight
+        : _gameModel.layoutWidth;
   }
 
   Future<void> _announceGameLayout(List<CardModel> cards) async {
@@ -185,14 +185,14 @@ class _GameBoardViewState extends State<GameBoardView> {
       if (_gameModel.state == GameState.oneCardSelected) {
         final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
         if (MediaQuery.of(context).accessibleNavigation) {
-          final String announcement = 'Selected ${cardName}.';
+          final String announcement = 'Selected $cardName.';
           // print('$announcement');
           await SemanticsService.announce(announcement, TextDirection.ltr);
         }
       } else if (_gameModel.state == GameState.twoCardsSelectedNotMatching) {
         // Set delayed action to flip non-matching cards back over.
         Future.delayed(
-            Duration(seconds: GameSettings.nonMatchingCardsFaceUpSeconds), () {
+            Duration(seconds: _gameModel.nonMatchingCardsFaceUpSeconds), () {
           setState(() {
             _gameModel = GameStateMachine.setNextState(
               model: _gameModel,
@@ -209,7 +209,7 @@ class _GameBoardViewState extends State<GameBoardView> {
           final String secondCardName =
               CardFaces.getCardName(selectedCards.last.cardFaceAssetPath);
           final String announcement =
-              'Selected ${firstCardName} and ${secondCardName} which do not match.';
+              'Selected $firstCardName and $secondCardName which do not match.';
           // print('$announcement');
           await SemanticsService.announce(announcement, TextDirection.ltr);
         }
@@ -217,7 +217,7 @@ class _GameBoardViewState extends State<GameBoardView> {
           MediaQuery.of(context).accessibleNavigation) {
         final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
         final String message =
-            'Matched two $cardName cards. Score is now ${_gameModel.cardMatchCount} out of ${GameSettings.numberOfUniqueCards}.';
+            'Matched two $cardName cards. Score is now ${_gameModel.cardMatchCount} out of ${_gameModel.numberOfUniqueCards}.';
         // print('$message');
         await SemanticsService.announce(message, TextDirection.ltr);
       }
@@ -290,7 +290,7 @@ class ScoreDisplayView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Matched ${_gameModel.cardMatchCount} of ${GameSettings.numberOfUniqueCards} pairs',
+        'Matched ${_gameModel.cardMatchCount} of ${_gameModel.numberOfUniqueCards} pairs',
         style: TextStyle(fontSize: 24),
         textAlign: TextAlign.center,
       ),

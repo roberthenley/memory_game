@@ -27,6 +27,8 @@ void main() {
     );
     List<CardModel> cardsFaceUp = [c11, c12, c21, c22];
     startingGameModel = GameModel(
+      layoutWidth: 2,
+      layoutHeight: 2,
       cards: cardsFaceUp,
       state: GameState.newGame,
       cardMatchCount: 0,
@@ -461,10 +463,10 @@ void main() {
         () {
       GameModel gameModel = startingGameModel.copyWith(
           state: GameState.twoCardsSelectedNotMatching);
-      _setNewGameStateThrowsException(startingGameModel);
-      _setOneCardSelectedGameStateThrowsException(startingGameModel);
-      _setTwoCardsSelectedNotMatchingThrowsException(startingGameModel);
-      _setWonGameStateThrowsException(startingGameModel);
+      _setNewGameStateThrowsException(gameModel);
+      _setOneCardSelectedGameStateThrowsException(gameModel);
+      _setTwoCardsSelectedNotMatchingThrowsException(gameModel);
+      _setWonGameStateThrowsException(gameModel);
     });
   });
 }

@@ -2,25 +2,54 @@ import 'package:meta/meta.dart';
 
 import 'card_faces.dart';
 import 'card_model.dart';
-import 'game_settings.dart';
+import 'default_game_settings.dart';
 import 'game_state.dart';
 
 class GameModel {
+  final int layoutWidth;
+  final int layoutHeight;
+  final int initialFaceUpSeconds;
+  final int nonMatchingCardsFaceUpSeconds;
+  final int durationSeconds;
   final List<CardModel> cards;
   final GameState state;
   final int cardMatchCount;
 
+  int get numberOfCards {
+    return layoutHeight * layoutWidth;
+  }
+
+  int get numberOfUniqueCards {
+    return (numberOfCards / 2).floor();
+  }
+
+  int get gameDurationSeconds {
+    return this.durationSeconds ?? this.numberOfCards * 6;
+  }
+
   GameModel({
+    this.layoutWidth = DefaultGameSettings.layoutWidth,
+    this.layoutHeight = DefaultGameSettings.layoutHeight,
+    this.initialFaceUpSeconds = DefaultGameSettings.initialFaceUpSeconds,
+    this.nonMatchingCardsFaceUpSeconds =
+        DefaultGameSettings.nonMatchingCardsFaceUpSeconds,
+    this.durationSeconds,
     @required this.cards,
     @required this.state,
     @required this.cardMatchCount,
   });
 
-  static GameModel newGame() {
+  static GameModel newGame({
+    int layoutWidth = DefaultGameSettings.layoutWidth,
+    int layoutHeight = DefaultGameSettings.layoutHeight,
+    int initialFaceUpSeconds,
+    int nonMatchingCardsFaceUpSeconds,
+    int durationSeconds,
+  }) {
     // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
     List<String> cardPaths =
-        CardFaces.getCardAssetPaths(GameSettings.numberOfUniqueCards);
+        CardFaces.getCardAssetPaths((layoutWidth * layoutHeight / 2).floor());
     List<CardModel> cards = [];
     for (String cardPath in cardPaths) {
       cards.add(CardModel(cardFaceAssetPath: cardPath, isFaceUp: true));
@@ -28,6 +57,11 @@ class GameModel {
     }
     cards.shuffle();
     return GameModel(
+      layoutWidth: layoutWidth,
+      layoutHeight: layoutHeight,
+      initialFaceUpSeconds: initialFaceUpSeconds,
+      nonMatchingCardsFaceUpSeconds: nonMatchingCardsFaceUpSeconds,
+      durationSeconds: durationSeconds,
       cards: cards,
       state: GameState.newGame,
       cardMatchCount: 0,
@@ -51,7 +85,7 @@ class GameModel {
         isSelected: isSelected,
       ));
     }
-    return GameModel(
+    return this.copyWith(
       cards: newCards,
       state: newState ?? state,
       cardMatchCount: newCardMatchCount ?? cardMatchCount,
@@ -64,7 +98,7 @@ class GameModel {
     int newMatchCount,
   }) {
     // replace the modified cards and set the new game state
-    return GameModel(
+    return this.copyWith(
       cards: _replaceCardsInList(cards, replacementCards),
       state: newState,
       cardMatchCount: newMatchCount ?? cardMatchCount,
@@ -107,6 +141,11 @@ class GameModel {
     int cardMatchCount,
   }) =>
       GameModel(
+        layoutWidth: layoutWidth,
+        layoutHeight: layoutHeight,
+        initialFaceUpSeconds: initialFaceUpSeconds,
+        nonMatchingCardsFaceUpSeconds: nonMatchingCardsFaceUpSeconds,
+        durationSeconds: durationSeconds,
         cards: cards ?? this.cards,
         state: state ?? this.state,
         cardMatchCount: cardMatchCount ?? this.cardMatchCount,

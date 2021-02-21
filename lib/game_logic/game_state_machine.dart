@@ -117,7 +117,7 @@ class GameStateMachine {
     // feature?! The game could skip from IN_GAME_2_CARDS_SELECTED_NO_MATCH to
     // IN_GAME_1_CARD_SELECTED directly...
     if (isMatch) {
-      GameState newState = 2 * (model.cardMatchCount + 1) == model.cards.length
+      GameState newState = model.cardMatchCount + 1 == model.numberOfUniqueCards
           ? GameState.wonGame
           : GameState.noCardsSelected;
       // print('_handleSecondCardSelection: isMatch; new game state = $newState');
@@ -139,7 +139,6 @@ class GameStateMachine {
       return model.copyWithNewCards(
         newState: GameState.twoCardsSelectedNotMatching,
         replacementCards: {cardSelected: newCardSelected},
-        newMatchCount: model.cardMatchCount + (isMatch ? 2 : 0),
       );
     }
   }
