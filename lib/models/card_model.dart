@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+/// Models the state of a game card.
 class CardModel {
   CardModel({
     this.isFaceUp = false,

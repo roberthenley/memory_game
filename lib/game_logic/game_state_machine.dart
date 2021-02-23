@@ -4,18 +4,28 @@ import 'package:memory_game/models/game_state.dart';
 import 'package:meta/meta.dart';
 
 class GameStateMachine {
+  /// Set the next game machine state from a new GameState value.
+  ///
+  /// This method is called by game timers.
   static GameModel setNextState({
     @required GameModel model,
     GameState newState,
   }) =>
       _nextState(model: model, newState: newState);
 
+  /// Set the next game machine state from a new card selection.
+  ///
+  /// This method is called when the user selects a card.
   static GameModel nextStateFromCard({
     @required GameModel model,
     CardModel cardSelected,
   }) =>
       _nextState(model: model, cardSelected: cardSelected);
 
+  /// Handles all game machine state transitions.
+  ///
+  /// This method is private and guarded against calls with both a new state and
+  /// a card selection.
   static GameModel _nextState({
     @required GameModel model,
     GameState newState,
@@ -79,10 +89,12 @@ class GameStateMachine {
         'Impossible game state: current state: ${model.state}, new state: $newState, cardSelected: ${cardSelected != null}');
   }
 
+  /// Handle the first card selected.
+  ///
+  /// Select the indicated card, turning it face up and marking it selected
+  /// and unselectable.
   static GameModel _handleFirstCardSelection(
       CardModel cardSelected, GameModel model) {
-    // Select the indicated card, turning it face up and marking it selected
-    // and unselectable.
     CardModel newCard = cardSelected.copyWith(
         isFaceUp: true, isSelected: true, isSelectable: false);
     return model.copyWithNewCards(
@@ -91,16 +103,19 @@ class GameStateMachine {
     );
   }
 
+  /// Handle the second card selected.
+  ///
+  /// Select the indicated card, turning it face up and making it
+  /// unselectable. If both it and the first selected card match,
+  /// mark them as matching, increment the match count and determine if
+  /// the game is won; set the new game state to GameState.WON,
+  /// GameState.IN_GAME_NO_CARDS_SELECTED or
+  /// GameState.IN_GAME_2_CARDS_SELECTED_NO_MATCH. If the later, the UI
+  /// layer has to set a timer to flip the cards back over and continue.
   static GameModel _handleSecondCardSelection(
       GameModel model, CardModel cardSelected) {
-    // Select the indicated card, turning it face up and making it
-    // unselectable. If both it and the first selected card match,
-    // mark them as matching, increment the match count and determine if
-    // the game is won; set the new game state to GameState.WON,
-    // GameState.IN_GAME_NO_CARDS_SELECTED or
-    // GameState.IN_GAME_2_CARDS_SELECTED_NO_MATCH. If the later, the UI
-    // layer has to set a timer to flip the cards back over and continue.
-    CardModel firstCardSelected = model.getSelectedCard();
+    CardModel firstCardSelected = model.getFirstSelectedCard();
+    assert(firstCardSelected != null);
     // print(
     //     '_handleSecondCardSelection: firstCardSelected = ${firstCardSelected?.cardFaceAssetPath ?? "none"}');
     bool isMatch =
@@ -143,9 +158,14 @@ class GameStateMachine {
     }
   }
 
+  /// Flips all non-matching cards face-down again.
+  ///
+  /// Called from _handleCardSelectionWhileNonMatchingCardsDisplayed() and
+  /// _handleFlippingNonMatchingCardsFaceDown.
   static Map<CardModel, CardModel> _flipNonMatchingCards(GameModel model) {
     // print('_flipNonMatchingCards');
     Iterable<CardModel> selectedCards = model.getAllSelectedCards();
+    assert(selectedCards.length == 2);
     Map<CardModel, CardModel> replacementCards = Map();
     for (CardModel card in selectedCards) {
       // print('_flipNonMatchingCards - flipping ${card.cardFaceAssetPath}');
@@ -161,12 +181,14 @@ class GameStateMachine {
     return replacementCards;
   }
 
+  /// Handle the case where the user was quick on the draw and short-circuited
+  /// the timer to flip the non-matching cards over.
+  ///
+  /// Flips the previously selected cards face-down and flips the newly selected
+  /// card face-up.
   static GameModel _handleCardSelectionWhileNonMatchingCardsDisplayed(
       GameModel model, CardModel cardSelected) {
     // print('_handleCardSelectionWhileNonMatchingCardsDisplayed');
-    // User was quick on the draw and short-circuited the timer to flip the
-    // non-matching cards over. Flip the previously selected cards face-down
-    // and flip the newly selected card face-up.
     Map<CardModel, CardModel> replacementCards = _flipNonMatchingCards(model);
     CardModel newCard = cardSelected.copyWith(
         isFaceUp: true, isSelected: true, isSelectable: false);
@@ -179,10 +201,12 @@ class GameStateMachine {
     );
   }
 
+  /// Handle flipping non-matching cards face down.
+  ///
+  /// Timer switching state. Turn non-matching cards face-down again.
   static GameModel _handleFlippingNonMatchingCardsFaceDown(
       GameModel model, GameState newState) {
     // print('_handleFlippingNonMatchingCardsFaceDown');
-    // Timer switching state. Turn non-matching cards face-down again.
     Map<CardModel, CardModel> replacementCards = _flipNonMatchingCards(model);
     return model.copyWithNewCards(
       newState: newState,

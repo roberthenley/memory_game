@@ -5,12 +5,17 @@ import 'card_model.dart';
 import 'default_game_settings.dart';
 import 'game_state.dart';
 
+/// Models the state of a game of Memory, including game settings.
+///
+/// Immutable. Game state and cards can be modified with copyWith...() methods.
+/// However, game settings, especially the number of cards, are unchangeable
+/// after model construction.
 class GameModel {
   final int layoutWidth;
   final int layoutHeight;
   final int initialFaceUpSeconds;
   final int nonMatchingCardsFaceUpSeconds;
-  final int durationSeconds;
+  int _durationSeconds; // Do not mutate.
   final List<CardModel> cards;
   final GameState state;
   final int cardMatchCount;
@@ -24,7 +29,7 @@ class GameModel {
   }
 
   int get gameDurationSeconds {
-    return this.durationSeconds ?? this.numberOfCards * 6;
+    return this._durationSeconds ?? this.numberOfCards * 6;
   }
 
   GameModel({
@@ -33,19 +38,30 @@ class GameModel {
     this.initialFaceUpSeconds = DefaultGameSettings.initialFaceUpSeconds,
     this.nonMatchingCardsFaceUpSeconds =
         DefaultGameSettings.nonMatchingCardsFaceUpSeconds,
-    this.durationSeconds,
+    int durationSeconds,
     @required this.cards,
     @required this.state,
     @required this.cardMatchCount,
-  });
+  }) {
+    this._durationSeconds = durationSeconds;
+  }
 
+  /// Create a new game model with random card faces in random order.
+  ///
+  /// A layout with an even number of cards is required.
+  /// Gets random card face assets from CardFaces.
+  /// Creates two copies of each card and shuffles the resulting list of
+  /// CardModels.
   static GameModel newGame({
     int layoutWidth = DefaultGameSettings.layoutWidth,
     int layoutHeight = DefaultGameSettings.layoutHeight,
-    int initialFaceUpSeconds,
-    int nonMatchingCardsFaceUpSeconds,
+    int initialFaceUpSeconds = DefaultGameSettings.initialFaceUpSeconds,
+    int nonMatchingCardsFaceUpSeconds =
+        DefaultGameSettings.nonMatchingCardsFaceUpSeconds,
     int durationSeconds,
   }) {
+    assert((layoutWidth * layoutHeight) % 2 == 0);
+
     // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
     List<String> cardPaths =
@@ -68,6 +84,8 @@ class GameModel {
     );
   }
 
+  /// Create a new game model by setting all cards to a new state and optionally
+  /// changing the game state and/or the count of matched game cards.
   GameModel copyWithCardFlags({
     GameState newState,
     int newCardMatchCount,
@@ -92,6 +110,8 @@ class GameModel {
     );
   }
 
+  /// Create a new game state by replacing specific cards, changing the game
+  /// state, and optionally changing the count of matched game cards.
   GameModel copyWithNewCards({
     @required GameState newState,
     @required Map<CardModel, CardModel> replacementCards,
@@ -115,6 +135,7 @@ class GameModel {
   //   return newCards;
   // }
 
+  /// Replace specific CardModels in a list, returning a new list.
   static List<CardModel> _replaceCardsInList(
     List<CardModel> cards,
     Map<CardModel, CardModel> replacementCards,
@@ -122,32 +143,43 @@ class GameModel {
     List<CardModel> newCardList = List<CardModel>.from(cards);
     replacementCards.forEach((CardModel oldCard, CardModel newCard) {
       int cardIndex = cards.indexOf(oldCard);
-      newCardList[cardIndex] = newCard;
+      if (cardIndex != -1) {
+        newCardList[cardIndex] = newCard;
+      }
     });
     return newCardList;
   }
 
-  CardModel getSelectedCard() {
-    return cards.firstWhere((element) => element.isSelected);
+  /// Get the first selected card.
+  CardModel getFirstSelectedCard() {
+    return cards.firstWhere((element) => element.isSelected,
+        orElse: () => null);
   }
 
+  /// Get all selected cards.
   Iterable<CardModel> getAllSelectedCards() {
     return cards.where((element) => element.isSelected);
   }
 
+  /// Create a new game model by replacing all cards, game state, or the number
+  /// of matched cards. Can not change game settings, especially card count.
   GameModel copyWith({
     List<CardModel> cards,
     GameState state,
     int cardMatchCount,
-  }) =>
-      GameModel(
-        layoutWidth: layoutWidth,
-        layoutHeight: layoutHeight,
-        initialFaceUpSeconds: initialFaceUpSeconds,
-        nonMatchingCardsFaceUpSeconds: nonMatchingCardsFaceUpSeconds,
-        durationSeconds: durationSeconds,
-        cards: cards ?? this.cards,
-        state: state ?? this.state,
-        cardMatchCount: cardMatchCount ?? this.cardMatchCount,
-      );
+  }) {
+    if (cards != null) {
+      assert(layoutWidth * layoutHeight == cards.length);
+    }
+    return GameModel(
+      layoutWidth: layoutWidth,
+      layoutHeight: layoutHeight,
+      initialFaceUpSeconds: initialFaceUpSeconds,
+      nonMatchingCardsFaceUpSeconds: nonMatchingCardsFaceUpSeconds,
+      durationSeconds: _durationSeconds,
+      cards: cards ?? this.cards,
+      state: state ?? this.state,
+      cardMatchCount: cardMatchCount ?? this.cardMatchCount,
+    );
+  }
 }

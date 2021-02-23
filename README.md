@@ -16,6 +16,20 @@ This is a bare-bones implementation of the game of Memory:
 Screen reader support is included. When accessibility navigation is enabled, the game timer is disabled.
 The code is able to handle other even-numbered rectangular layouts, up to 20 card pairs, but the 2x3 layout is hard-coded at the moment.
 
+## Code structure
+- main.dart - the main() method.
+- memory_app.dart - the application container widget.
+- home_page.dart - the HomePage widget with a button to route to a GamePage for a new game.
+- game_page.dart - the GamePage widget which scaffolds a GameBoardView.
+- game_board_view.dart - a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayView, TimerDisplayView, and a GridView of CardViews.
+- card_view.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardView to update game state on card selection.
+- models/card_faces.dart - contains card face asset paths and helper methods to pick a random selection of them for each game.
+- models/default_game_settings.dart - contains default game values for layout and timer delays.
+- models/card_model.dart - immutably represents the state of a card.
+- models/game_model.dart - immutably represents the state of a game.
+- models/game_state.dart - enumerates the allowed game states.
+- logic/game_state_machine.dart - state machine the controls game play: given the current game model and a player move or timer state change, produces a new game model.
+
 ## Basic game TO DO list
 - DONE: Create skeleton app from starter project: HomePage and "New game" button
 - DONE: Create card and game model classes
@@ -59,14 +73,18 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - Performance: will card model state transitions that don't effect visibility cost too much to rebuild?
 
 ## Additional features TBD
-- Fix GamePage and CardView so they scale properly to the display without scrolling
 - Improve win/loss notification UI
 - Adjustable card layout / card count - improve HomePage, so it's not so bare-bones
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Add Golden tests?
-- Animate card flipping (consider leveraging flip_card package)
+- Animate card flipping (consider leveraging the flip_card package)
 - Internationalization
 - Persistent application state
 - Transition to Null Safety
-- Mute the white/black color contrast
+- Mute the white/black color contrast slightly
 
+## Known issues
+- GameBoardView doesn't scale properly to the display without scrolling.
+- GameModel isn't as immutable as I'd like; I don't see a clean way to default a computed value into _durationSeconds.
+- GameModel doesn't validate that card count hasn't changed.
+- The app structure is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.

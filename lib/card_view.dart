@@ -4,15 +4,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'models/card_faces.dart';
 import 'models/card_model.dart';
 
+/// Card view widget.
+///
+/// Stateless. Takes a CardModel and a callback for card selection handling.
+/// Encodes the card back picture at the class level so it is reused.
 class CardView extends StatelessWidget {
   const CardView({
     Key key,
     @required this.cardModel,
-    @required this.callback,
+    @required this.selectionCallback,
   }) : super(key: key);
 
   final CardModel cardModel;
-  final Function callback;
+  final Function selectionCallback;
 
   // Card back image path is 'assets/svg/question-mark-round-line.svg'
   static final SvgPicture faceDownCard = SvgPicture.asset(
@@ -51,7 +55,7 @@ class CardView extends StatelessWidget {
         ),
         onTap: () {
           if (cardModel.isSelectable) {
-            callback(cardModel);
+            selectionCallback(cardModel);
           }
         },
       ),

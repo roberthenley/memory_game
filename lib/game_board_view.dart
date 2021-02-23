@@ -10,6 +10,18 @@ import 'models/card_model.dart';
 import 'models/game_model.dart';
 import 'models/game_state.dart';
 
+/// Game board view widget.
+///
+/// Stateful. Displays the game score, game timer, and a grid of CardView
+/// widgets. Handles all user actions and game timers.
+///
+/// The grid layout dimensions respond to portrait and landscape mode.
+///
+/// Delegates the game score and timer displays to ScoreDisplayView and
+/// TimerDisplayView (below). Passes _onCardSelected to each CardView.
+///
+/// Disables the overall game timer and suppresses the timer display if
+/// accessibleNavigation is active.
 class GameBoardView extends StatefulWidget {
   @override
   _GameBoardViewState createState() => _GameBoardViewState();
@@ -81,7 +93,7 @@ class _GameBoardViewState extends State<GameBoardView> {
               (index) {
                 return CardView(
                   cardModel: _gameModel.cards[index],
-                  callback: _onCardSelected,
+                  selectionCallback: _onCardSelected,
                 );
               },
             ),
@@ -98,18 +110,22 @@ class _GameBoardViewState extends State<GameBoardView> {
     super.dispose();
   }
 
+  /// Returns the displayed game board width, depending on screen orientation.
   int _responsiveBoardWidth() {
     return MediaQuery.of(context).orientation == Orientation.portrait
         ? _gameModel.layoutWidth
         : _gameModel.layoutHeight;
   }
 
+  /// Returns the displayed game board height, depending on screen orientation.
   int _responsiveBoardHeight() {
     return MediaQuery.of(context).orientation == Orientation.portrait
         ? _gameModel.layoutHeight
         : _gameModel.layoutWidth;
   }
 
+  /// Announces the game grid dimensions for accessibility when the app changes
+  /// between portrait and landscape mode.
   Future<void> _announceGameLayout(List<CardModel> cards) async {
     if (!MediaQuery.of(context).accessibleNavigation) {
       return;
@@ -121,6 +137,7 @@ class _GameBoardViewState extends State<GameBoardView> {
     await SemanticsService.announce(message, TextDirection.ltr);
   }
 
+  /// Announce the full face-up card layout for accessibility.
   Future<void> _announceCardLayout(List<CardModel> cards) async {
     if (!MediaQuery.of(context).accessibleNavigation) {
       return;
@@ -175,59 +192,70 @@ class _GameBoardViewState extends State<GameBoardView> {
     );
   }
 
+  /// Callback for CardView widget when a face-down card is selected.
+  ///
+  /// Passes the card selected to the game state machine, then updates the
+  /// GameBoardView's state and makes accessibility announcements accordingly.
   void _onCardSelected(CardModel card) async {
-    if (card.isSelectable) {
-      setState(() {
-        _gameModel = GameStateMachine.nextStateFromCard(
-            model: _gameModel, cardSelected: card);
+    if (!card.isSelectable) {
+      return;
+    }
+
+    setState(() {
+      _gameModel = GameStateMachine.nextStateFromCard(
+          model: _gameModel, cardSelected: card);
+    });
+
+    if (_gameModel.state == GameState.oneCardSelected) {
+      final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
+      if (MediaQuery.of(context).accessibleNavigation) {
+        final String announcement = 'Selected $cardName.';
+        // print('$announcement');
+        await SemanticsService.announce(announcement, TextDirection.ltr);
+      }
+    } else if (_gameModel.state == GameState.twoCardsSelectedNotMatching) {
+      // Set delayed action to flip non-matching cards back over.
+      Future.delayed(
+          Duration(seconds: _gameModel.nonMatchingCardsFaceUpSeconds), () {
+        setState(() {
+          _gameModel = GameStateMachine.setNextState(
+            model: _gameModel,
+            newState: GameState.noCardsSelected,
+          );
+        });
       });
 
-      if (_gameModel.state == GameState.oneCardSelected) {
-        final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
-        if (MediaQuery.of(context).accessibleNavigation) {
-          final String announcement = 'Selected $cardName.';
-          // print('$announcement');
-          await SemanticsService.announce(announcement, TextDirection.ltr);
-        }
-      } else if (_gameModel.state == GameState.twoCardsSelectedNotMatching) {
-        // Set delayed action to flip non-matching cards back over.
-        Future.delayed(
-            Duration(seconds: _gameModel.nonMatchingCardsFaceUpSeconds), () {
-          setState(() {
-            _gameModel = GameStateMachine.setNextState(
-              model: _gameModel,
-              newState: GameState.noCardsSelected,
-            );
-          });
-        });
-
-        if (MediaQuery.of(context).accessibleNavigation) {
-          final Iterable<CardModel> selectedCards =
-              _gameModel.getAllSelectedCards();
-          final String firstCardName =
-              CardFaces.getCardName(selectedCards.first.cardFaceAssetPath);
-          final String secondCardName =
-              CardFaces.getCardName(selectedCards.last.cardFaceAssetPath);
-          final String announcement =
-              'Selected $firstCardName and $secondCardName which do not match.';
-          // print('$announcement');
-          await SemanticsService.announce(announcement, TextDirection.ltr);
-        }
-      } else if (_gameModel.state == GameState.noCardsSelected &&
-          MediaQuery.of(context).accessibleNavigation) {
-        final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
-        final String message =
-            'Matched two $cardName cards. Score is now ${_gameModel.cardMatchCount} out of ${_gameModel.numberOfUniqueCards}.';
-        // print('$message');
-        await SemanticsService.announce(message, TextDirection.ltr);
+      if (MediaQuery.of(context).accessibleNavigation) {
+        final Iterable<CardModel> selectedCards =
+            _gameModel.getAllSelectedCards();
+        assert(selectedCards.length == 2);
+        final String firstCardName =
+            CardFaces.getCardName(selectedCards.first.cardFaceAssetPath);
+        final String secondCardName =
+            CardFaces.getCardName(selectedCards.last.cardFaceAssetPath);
+        final String announcement =
+            'Selected $firstCardName and $secondCardName which do not match.';
+        // print('$announcement');
+        await SemanticsService.announce(announcement, TextDirection.ltr);
       }
+    } else if (_gameModel.state == GameState.noCardsSelected &&
+        MediaQuery.of(context).accessibleNavigation) {
+      final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
+      final String message =
+          'Matched two $cardName cards. Score is now ${_gameModel.cardMatchCount} out of ${_gameModel.numberOfUniqueCards}.';
+      // print('$message');
+      await SemanticsService.announce(message, TextDirection.ltr);
+    }
 
-      if (_gameModel.state == GameState.wonGame) {
-        _showGameEnd();
-      }
+    if (_gameModel.state == GameState.wonGame) {
+      _showGameEnd();
     }
   }
 
+  /// Show game end notification: win or lose.
+  ///
+  /// Presently displays a snackbar with the option to return to the HomePage.
+  /// Called from game timer (in _startGameTimer()) and _onCardSelected().
   void _showGameEnd() {
     if (_gameModel.state == GameState.wonGame ||
         _gameModel.state == GameState.lostGame) {

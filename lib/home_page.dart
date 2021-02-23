@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'game_page.dart';
 
+/// Home page widget.
+///
+/// Stateless. Allows you to start a new game.
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

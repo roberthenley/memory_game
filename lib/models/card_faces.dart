@@ -22,12 +22,20 @@ class CardFaces {
     'assets/svg/worm.svg': 'Worm',
   };
 
+  /// Returns a randomized list of n (<= 20) card asset paths.
+  ///
+  /// Used for populating the cards used in a new game.
   static List<String> getCardAssetPaths(int n) {
+    assert(n <= _cardPathNames.length);
     List<String> randomizedList = List<String>.from(_cardPathNames.keys);
     randomizedList.shuffle();
     return randomizedList.take(n).toList(growable: false);
   }
 
+  /// Returns the user-friendly name for a card face asset.
+  ///
+  /// Used for both face-up card Semantics labelling and in announcements for
+  /// accessibility.
   static String getCardName(String cardPath) {
     String cardName = _cardPathNames[cardPath];
     // print('getCardName: ${cardName}');
