@@ -62,9 +62,10 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Adjustable card layout / card count - improve HomePage, so it's not so bare-bones; refactor GamePage and GameBoardView for testability
 - DONE: Refactor CardFaces singleton for testability (allow access to non-randomized card face list for testing)
 - DONE: Widget tests for CardView widget
+- DONE: Made GameModel _durationSeconds immutable
+- DONE: Widget tests for ScoreDisplayView
+- DONE: Widget tests for TimerDisplayView
 - GameModel unit tests
-- Widget tests for ScoreDisplayView
-- Widget tests for TimerDisplayView
 - Widget tests for GameBoardView
 - Flutter driver tests / use new integration_test package?
 - Add custom app icon
@@ -88,6 +89,5 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 
 ## Known issues
 - GameBoardView doesn't scale properly to the display without scrolling.
-- GameModel isn't as immutable as I'd like; I don't see a clean way to default a computed value into _durationSeconds.
 - GameModel doesn't validate that card count hasn't changed.
 - The app structure is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.

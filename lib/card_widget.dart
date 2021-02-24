@@ -8,8 +8,8 @@ import 'models/card_model.dart';
 ///
 /// Stateless. Takes a CardModel and a callback for card selection handling.
 /// Encodes the card back picture at the class level so it is reused.
-class CardView extends StatelessWidget {
-  const CardView({
+class CardWidget extends StatelessWidget {
+  const CardWidget({
     Key key,
     @required this.cardModel,
     @required this.selectionCallback,

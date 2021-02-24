@@ -15,7 +15,7 @@ class GameModel {
   final int layoutHeight;
   final int initialFaceUpSeconds;
   final int nonMatchingCardsFaceUpSeconds;
-  int _durationSeconds; // Do not mutate.
+  final int _durationSeconds;
   final List<CardModel> cards;
   final GameState state;
   final int cardMatchCount;
@@ -42,9 +42,7 @@ class GameModel {
     @required this.cards,
     @required this.state,
     @required this.cardMatchCount,
-  }) {
-    this._durationSeconds = durationSeconds;
-  }
+  }) : this._durationSeconds = durationSeconds;
 
   /// Create a new game model with random card faces in random order.
   ///

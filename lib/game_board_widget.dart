@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:memory_game/models/card_faces.dart';
 
-import 'card_view.dart';
+import 'card_widget.dart';
 import 'game_logic/game_state_machine.dart';
 import 'models/card_model.dart';
 import 'models/game_model.dart';
 import 'models/game_state.dart';
+import 'score_display_widget.dart';
+import 'timer_display_widget.dart';
 
 /// Game board view widget.
 ///
@@ -22,20 +24,20 @@ import 'models/game_state.dart';
 ///
 /// Disables the overall game timer and suppresses the timer display if
 /// accessibleNavigation is active.
-class GameBoardView extends StatefulWidget {
+class GameBoardWidget extends StatefulWidget {
   GameModel initialGameModel;
 
-  GameBoardView({this.initialGameModel}) {
+  GameBoardWidget({this.initialGameModel}) {
     if (initialGameModel == null) {
       initialGameModel = GameModel.newGame();
     }
   }
 
   @override
-  _GameBoardViewState createState() => _GameBoardViewState();
+  _GameBoardWidgetState createState() => _GameBoardWidgetState();
 }
 
-class _GameBoardViewState extends State<GameBoardView> {
+class _GameBoardWidgetState extends State<GameBoardWidget> {
   GameModel _gameModel;
   Timer _timer;
   bool _gameStarted = false;
@@ -89,9 +91,12 @@ class _GameBoardViewState extends State<GameBoardView> {
     return Column(
       children: [
         SizedBox(height: 10),
-        ScoreDisplayView(gameModel: _gameModel),
+        ScoreDisplayWidget(
+          score: _gameModel.cardMatchCount,
+          total: _gameModel.numberOfUniqueCards,
+        ),
         if (!MediaQuery.of(context).accessibleNavigation)
-          TimerDisplayView(timeRemaining: _timeRemaining),
+          TimerDisplayWidget(timeRemaining: _timeRemaining),
         Expanded(
           child: GridView.count(
             crossAxisCount: _responsiveBoardWidth(),
@@ -99,7 +104,7 @@ class _GameBoardViewState extends State<GameBoardView> {
             children: List.generate(
               _gameModel.numberOfCards,
               (index) {
-                return CardView(
+                return CardWidget(
                   cardModel: _gameModel.cards[index],
                   selectionCallback: _onCardSelected,
                 );
@@ -284,52 +289,5 @@ class _GameBoardViewState extends State<GameBoardView> {
         ),
       );
     }
-  }
-}
-
-class TimerDisplayView extends StatelessWidget {
-  const TimerDisplayView({
-    Key key,
-    @required int timeRemaining,
-  })  : _timeRemaining = timeRemaining,
-        super(key: key);
-
-  final int _timeRemaining;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 4),
-        Center(
-          child: Text(
-            '$_timeRemaining seconds',
-            style: TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ScoreDisplayView extends StatelessWidget {
-  const ScoreDisplayView({
-    Key key,
-    @required GameModel gameModel,
-  })  : _gameModel = gameModel,
-        super(key: key);
-
-  final GameModel _gameModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Matched ${_gameModel.cardMatchCount} of ${_gameModel.numberOfUniqueCards} pairs',
-        style: TextStyle(fontSize: 24),
-        textAlign: TextAlign.center,
-      ),
-    );
   }
 }

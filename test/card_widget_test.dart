@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:memory_game/card_view.dart';
+import 'package:memory_game/card_widget.dart';
 import 'package:memory_game/models/card_faces.dart';
 import 'package:memory_game/models/card_model.dart';
 
@@ -25,16 +25,16 @@ void main() {
         testCardModel,
         [
           (Widget widget) =>
-              widget is SvgPicture && widget == CardView.faceDownCard,
+              widget is SvgPicture && widget == CardWidget.faceDownCard,
           (Widget widget) =>
               widget is Semantics &&
-              widget.properties.label == CardView.faceDownCardSemanticsLabel,
+              widget.properties.label == CardWidget.faceDownCardSemanticsLabel,
           (Widget widget) {
             if (widget is! Card) return false;
             Card card = widget;
             if (card.shape is! RoundedRectangleBorder) return false;
             RoundedRectangleBorder border = card.shape;
-            return border.side.color == CardView.nonHighlightBorderColor;
+            return border.side.color == CardWidget.nonHighlightBorderColor;
           },
         ],
       );
@@ -59,7 +59,7 @@ void main() {
         testCardModel,
         [
           (Widget widget) =>
-              widget is SvgPicture && widget != CardView.faceDownCard,
+              widget is SvgPicture && widget != CardWidget.faceDownCard,
           (Widget widget) =>
               widget is Semantics &&
               widget.properties.label == cardSemanticsLabel,
@@ -68,7 +68,7 @@ void main() {
             Card card = widget;
             if (card.shape is! RoundedRectangleBorder) return false;
             RoundedRectangleBorder border = card.shape;
-            return border.side.color == CardView.nonHighlightBorderColor;
+            return border.side.color == CardWidget.nonHighlightBorderColor;
           },
         ],
       );
@@ -95,7 +95,7 @@ void main() {
         testCardModel,
         [
           (Widget widget) =>
-              widget is SvgPicture && widget != CardView.faceDownCard,
+              widget is SvgPicture && widget != CardWidget.faceDownCard,
           (Widget widget) =>
               widget is Semantics &&
               widget.properties.label == cardSemanticsLabel,
@@ -104,7 +104,7 @@ void main() {
             Card card = widget;
             if (card.shape is! RoundedRectangleBorder) return false;
             RoundedRectangleBorder border = card.shape;
-            return border.side.color == CardView.highlightBorderColor;
+            return border.side.color == CardWidget.highlightBorderColor;
           },
         ],
       );
@@ -187,7 +187,7 @@ Future<Finder> createCardAndTestExists(
   await tester.pumpWidget(
     MaterialApp(
       home: Scaffold(
-        body: CardView(
+        body: CardWidget(
           key: Key(cardKeyId),
           cardModel: testCardModel,
           selectionCallback: selectionCallback,
