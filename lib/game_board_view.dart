@@ -23,6 +23,14 @@ import 'models/game_state.dart';
 /// Disables the overall game timer and suppresses the timer display if
 /// accessibleNavigation is active.
 class GameBoardView extends StatefulWidget {
+  GameModel initialGameModel;
+
+  GameBoardView({this.initialGameModel}) {
+    if (initialGameModel == null) {
+      initialGameModel = GameModel.newGame();
+    }
+  }
+
   @override
   _GameBoardViewState createState() => _GameBoardViewState();
 }
@@ -36,7 +44,7 @@ class _GameBoardViewState extends State<GameBoardView> {
   @override
   void initState() {
     super.initState();
-    _gameModel = GameModel.newGame();
+    _gameModel = widget.initialGameModel;
     _timeRemaining = _gameModel.gameDurationSeconds;
   }
 

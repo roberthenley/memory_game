@@ -22,6 +22,9 @@ class CardView extends StatelessWidget {
   static final SvgPicture faceDownCard = SvgPicture.asset(
     'assets/svg/question-mark-round-line.svg',
   );
+  static final String faceDownCardSemanticsLabel = 'Card Back';
+  static final Color highlightBorderColor = Colors.blue;
+  static final Color nonHighlightBorderColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +34,23 @@ class CardView extends StatelessWidget {
       button: true,
       container: true,
       excludeSemantics: true,
-      label: cardModel.isFaceUp ? cardName : 'Card Back',
+      label: cardModel.isFaceUp ? cardName : faceDownCardSemanticsLabel,
       child: InkWell(
         child: Card(
           margin: EdgeInsets.all(8.0),
           shape: cardModel.isMatched
               ? RoundedRectangleBorder(
-                  side: new BorderSide(color: Colors.blue, width: 4.0),
+                  side: new BorderSide(
+                    color: highlightBorderColor,
+                    width: 4.0,
+                  ),
                   borderRadius: BorderRadius.circular(4.0),
                 )
               : new RoundedRectangleBorder(
-                  side: new BorderSide(color: Colors.white, width: 4.0),
+                  side: new BorderSide(
+                    color: nonHighlightBorderColor,
+                    width: 4.0,
+                  ),
                   borderRadius: BorderRadius.circular(4.0),
                 ),
           child: Container(

@@ -64,8 +64,8 @@ class GameModel {
 
     // Initialize game board with two copies of each cards.
     // Cards are face-up for the initial display state.
-    List<String> cardPaths =
-        CardFaces.getCardAssetPaths((layoutWidth * layoutHeight / 2).floor());
+    List<String> cardPaths = CardFaces.getRandomCardAssetPaths(
+        (layoutWidth * layoutHeight / 2).floor());
     List<CardModel> cards = [];
     for (String cardPath in cardPaths) {
       cards.add(CardModel(cardFaceAssetPath: cardPath, isFaceUp: true));

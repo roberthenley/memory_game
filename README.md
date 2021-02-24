@@ -7,14 +7,14 @@ This is a bare-bones implementation of the game of Memory:
 - The game page displays a fixed 2x3 card layout (3x2 in landscape mode).
 - There are 20 different card images of which 3 are randomly selected for each game.
 - Two copies of each card are included in the layout in random order.
-- The game displays all cards face-up for 5 seconds, then flips them face-down and starts a 36 second game timer. 
+- The game displays all cards face-up for 5 seconds, then flips the cards face-down and starts a game timer scaled to the number of cards. 
 - Selecting a card turns it face-up. 
 - Matching pairs of cards are left face-up and highlighted with a border and a point is scored.
 - Non-matching pairs of cards are flipped over after two seconds.
 - Matching all cards within the time limit wins the game; otherwise, it is lost.
 
 Screen reader support is included. When accessibility navigation is enabled, the game timer is disabled.
-The code is able to handle other even-numbered rectangular layouts, up to 20 card pairs, but the 2x3 layout is hard-coded at the moment.
+The code is able to handle other even-numbered rectangular layouts, up to 20 card pairs, but only 2x2, 2x3, and 3x4 layouts are presently supported.
 
 ## Code structure
 - main.dart - the main() method.
@@ -59,9 +59,13 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Accessibility Scanner testing
 - DONE: Game state machine unit tests
 - DONE: Refactor GameSettings singleton for testability
+- DONE: Adjustable card layout / card count - improve HomePage, so it's not so bare-bones; refactor GamePage and GameBoardView for testability
+- DONE: Refactor CardFaces singleton for testability (allow access to non-randomized card face list for testing)
+- DONE: Widget tests for CardView widget
 - GameModel unit tests
-- Refactor CardFaces singleton for testability 
-- Widget tests for CardView widget, ScoreDisplayView, and GameBoardView
+- Widget tests for ScoreDisplayView
+- Widget tests for TimerDisplayView
+- Widget tests for GameBoardView
 - Flutter driver tests / use new integration_test package?
 - Add custom app icon
 
@@ -74,7 +78,6 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 
 ## Additional features TBD
 - Improve win/loss notification UI
-- Adjustable card layout / card count - improve HomePage, so it's not so bare-bones
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Add Golden tests?
 - Animate card flipping (consider leveraging the flip_card package)

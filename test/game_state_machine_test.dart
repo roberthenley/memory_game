@@ -1,4 +1,5 @@
 import 'package:memory_game/game_logic/game_state_machine.dart';
+import 'package:memory_game/models/card_faces.dart';
 import 'package:memory_game/models/card_model.dart';
 import 'package:memory_game/models/game_model.dart';
 import 'package:memory_game/models/game_state.dart';
@@ -9,20 +10,21 @@ void main() {
 
   /// Set up starting game model as a 2x2 card grid in newGame state.
   setUp(() {
+    List<String> cardAssetPaths = CardFaces.getFirstCardAssetPaths(2);
     CardModel c11 = CardModel(
-      cardFaceAssetPath: 'assets/svg/bear-animal.svg',
+      cardFaceAssetPath: cardAssetPaths.first,
       isFaceUp: true,
     );
     CardModel c12 = CardModel(
-      cardFaceAssetPath: 'assets/svg/bee-honey.svg',
+      cardFaceAssetPath: cardAssetPaths.last,
       isFaceUp: true,
     );
     CardModel c21 = CardModel(
-      cardFaceAssetPath: 'assets/svg/bee-honey.svg',
+      cardFaceAssetPath: cardAssetPaths.last,
       isFaceUp: true,
     );
     CardModel c22 = CardModel(
-      cardFaceAssetPath: 'assets/svg/bear-animal.svg',
+      cardFaceAssetPath: cardAssetPaths.first,
       isFaceUp: true,
     );
     List<CardModel> cardsFaceUp = [c11, c12, c21, c22];

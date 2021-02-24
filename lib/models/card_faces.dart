@@ -1,3 +1,4 @@
+/// Holds the card face asset paths and user-friendly card names.
 class CardFaces {
   static final Map<String, String> _cardPathNames = {
     'assets/svg/bear-animal.svg': 'Bear',
@@ -25,11 +26,18 @@ class CardFaces {
   /// Returns a randomized list of n (<= 20) card asset paths.
   ///
   /// Used for populating the cards used in a new game.
-  static List<String> getCardAssetPaths(int n) {
+  static List<String> getRandomCardAssetPaths(int n) {
     assert(n <= _cardPathNames.length);
     List<String> randomizedList = List<String>.from(_cardPathNames.keys);
     randomizedList.shuffle();
     return randomizedList.take(n).toList(growable: false);
+  }
+
+  /// Returns a list of the first n (<= 20) card asset paths -- use for testing
+  /// purposes only.
+  static List<String> getFirstCardAssetPaths(int n) {
+    assert(n <= _cardPathNames.length);
+    return _cardPathNames.keys.take(n).toList(growable: false);
   }
 
   /// Returns the user-friendly name for a card face asset.
