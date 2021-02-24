@@ -20,9 +20,11 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - main.dart - the main() method.
 - memory_app.dart - the application container widget.
 - home_page.dart - the HomePage widget with a button to route to a GamePage for a new game.
-- game_page.dart - the GamePage widget which scaffolds a GameBoardView.
-- game_board_view.dart - a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayView, TimerDisplayView, and a GridView of CardViews.
-- card_view.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardView to update game state on card selection.
+- game_page.dart - the GamePage widget which scaffolds a GameBoardWidget.
+- game_board_widget.dart - a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
+- card_widget.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardWidget to update game state on card selection.
+- score_display_widget.dart - a stateless widget that displays the matched and total card pairs.
+- timer_display_widget.dart - a stateless widget that displays the remaining game time.
 - models/card_faces.dart - contains card face asset paths and helper methods to pick a random selection of them for each game.
 - models/default_game_settings.dart - contains default game values for layout and timer delays.
 - models/card_model.dart - immutably represents the state of a card.
@@ -59,14 +61,14 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Accessibility Scanner testing
 - DONE: Game state machine unit tests
 - DONE: Refactor GameSettings singleton for testability
-- DONE: Adjustable card layout / card count - improve HomePage, so it's not so bare-bones; refactor GamePage and GameBoardView for testability
+- DONE: Adjustable card layout / card count - improve HomePage, so it's not so bare-bones; refactor GamePage and GameBoardWidget for testability
 - DONE: Refactor CardFaces singleton for testability (allow access to non-randomized card face list for testing)
-- DONE: Widget tests for CardView widget
+- DONE: Widget tests for CardWidget
 - DONE: Made GameModel _durationSeconds immutable
-- DONE: Widget tests for ScoreDisplayView
-- DONE: Widget tests for TimerDisplayView
+- DONE: Widget tests for ScoreDisplayWidget
+- DONE: Widget tests for TimerDisplayWidget
 - GameModel unit tests
-- Widget tests for GameBoardView
+- Widget tests for GameBoardWidget
 - Flutter driver tests / use new integration_test package?
 - Add custom app icon
 
@@ -88,6 +90,5 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - Mute the white/black color contrast slightly
 
 ## Known issues
-- GameBoardView doesn't scale properly to the display without scrolling.
-- GameModel doesn't validate that card count hasn't changed.
+- GameBoardWidget doesn't scale properly to the display without scrolling.
 - The app structure is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.
