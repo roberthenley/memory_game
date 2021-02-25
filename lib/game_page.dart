@@ -7,7 +7,7 @@ import 'models/game_model.dart';
 ///
 /// Stateless. Provides scaffolding for the game board view widget.
 class GamePage extends StatelessWidget {
-  GameModel initialGameModel;
+  final GameModel initialGameModel;
 
   GamePage({this.initialGameModel});
 

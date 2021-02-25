@@ -25,13 +25,9 @@ import 'timer_display_widget.dart';
 /// Disables the overall game timer and suppresses the timer display if
 /// accessibleNavigation is active.
 class GameBoardWidget extends StatefulWidget {
-  GameModel initialGameModel;
+  final GameModel initialGameModel;
 
-  GameBoardWidget({this.initialGameModel}) {
-    if (initialGameModel == null) {
-      initialGameModel = GameModel.newGame();
-    }
-  }
+  GameBoardWidget({this.initialGameModel});
 
   @override
   _GameBoardWidgetState createState() => _GameBoardWidgetState();
@@ -46,7 +42,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
   @override
   void initState() {
     super.initState();
-    _gameModel = widget.initialGameModel;
+    _gameModel = widget.initialGameModel ?? GameModel.newGame();
     _timeRemaining = _gameModel.gameDurationSeconds;
   }
 
@@ -66,23 +62,31 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
         await _announceCardLayout(_gameModel.cards);
       }
 
-      Future.delayed(Duration(seconds: _gameModel.initialFaceUpSeconds), () {
-        setState(
-          () {
-            _gameModel = GameStateMachine.setNextState(
-              model: _gameModel,
-              newState: GameState.noCardsSelected,
-            );
-            _gameStarted = true;
-          },
-        );
+      if (_gameModel.initialFaceUpSeconds > 0) {
+        Future.delayed(Duration(seconds: _gameModel.initialFaceUpSeconds), () {
+          startGame();
+        });
+      } else {
+        startGame();
+      }
+    }
+  }
 
-        // Do not use a game timer if accessible navigation, like a screen
-        // reader, is in use.
-        if (!MediaQuery.of(context).accessibleNavigation) {
-          _startGameTimer();
-        }
-      });
+  void startGame() {
+    setState(
+      () {
+        _gameModel = GameStateMachine.setNextState(
+          model: _gameModel,
+          newState: GameState.noCardsSelected,
+        );
+        _gameStarted = true;
+      },
+    );
+
+    // Do not use a game timer if accessible navigation, like a screen
+    // reader, is in use.
+    if (!MediaQuery.of(context).accessibleNavigation) {
+      _startGameTimer();
     }
   }
 

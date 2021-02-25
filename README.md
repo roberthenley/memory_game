@@ -67,8 +67,8 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Made GameModel _durationSeconds immutable
 - DONE: Widget tests for ScoreDisplayWidget
 - DONE: Widget tests for TimerDisplayWidget
-- GameModel unit tests
-- Widget tests for GameBoardWidget
+- DONE: GameModel unit tests
+- DONE: Widget tests for GameBoardWidget
 - Flutter driver tests / use new integration_test package?
 - Add custom app icon
 
