@@ -109,6 +109,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
               _gameModel.numberOfCards,
               (index) {
                 return CardWidget(
+                  key: Key('Card $index'),
                   cardModel: _gameModel.cards[index],
                   selectionCallback: _onCardSelected,
                 );

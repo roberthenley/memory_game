@@ -3,9 +3,9 @@
 The game of Memory, implemented in Flutter.
 
 This is a bare-bones implementation of the game of Memory:
-- The home page allows the player to start a new game.
-- The game page displays a fixed 2x3 card layout (3x2 in landscape mode).
-- There are 20 different card images of which 3 are randomly selected for each game.
+- The home page allows the player to start a new game with 2x2, 2x3, or 3x4 card layouts.
+- The game page displays the given card layout (with dimensions reversed in landscape mode).
+- There are 20 different card images of which 2, 3, or 6 are randomly selected for each game.
 - Two copies of each card are included in the layout in random order.
 - The game displays all cards face-up for 5 seconds, then flips the cards face-down and starts a game timer scaled to the number of cards. 
 - Selecting a card turns it face-up. 
@@ -14,7 +14,11 @@ This is a bare-bones implementation of the game of Memory:
 - Matching all cards within the time limit wins the game; otherwise, it is lost.
 
 Screen reader support is included. When accessibility navigation is enabled, the game timer is disabled.
-The code is able to handle other even-numbered rectangular layouts, up to 20 card pairs, but only 2x2, 2x3, and 3x4 layouts are presently supported.
+
+The code is able to handle other even-numbered rectangular layouts, up to 20 card pairs, but only 2x2, 2x3, and 3x4 layouts are home page options.
+
+Run the integration tests with: 
+```flutter drive --driver=test_driver/integration_test.dart --target=integration_test/memory_2x2_game_test.dart```
 
 ## Code structure
 - main.dart - the main() method.
@@ -69,7 +73,7 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - DONE: Widget tests for TimerDisplayWidget
 - DONE: GameModel unit tests
 - DONE: Widget tests for GameBoardWidget
-- Flutter driver tests / use new integration_test package?
+- DONE: Integration tests using new integration_test package
 - Add custom app icon
 
 ## Potential refactorings / design decisions TBD
@@ -88,7 +92,9 @@ The code is able to handle other even-numbered rectangular layouts, up to 20 car
 - Persistent application state
 - Transition to Null Safety
 - Mute the white/black color contrast slightly
+- Support Dark Mode
+- Expand integration tests
 
 ## Known issues
 - GameBoardWidget doesn't scale properly to the display without scrolling.
-- The app structure is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.
+- The app architecture is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.
