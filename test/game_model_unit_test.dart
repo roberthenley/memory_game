@@ -1,7 +1,7 @@
-import 'package:memory_game/models/card_faces.dart';
-import 'package:memory_game/models/card_model.dart';
-import 'package:memory_game/models/game_model.dart';
-import 'package:memory_game/models/game_state.dart';
+import 'package:memory_game/domain/game_logic/game_machine_state.dart';
+import 'package:memory_game/domain/models/card_faces.dart';
+import 'package:memory_game/domain/models/card_model.dart';
+import 'package:memory_game/domain/models/game_model.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -31,7 +31,7 @@ void main() {
       layoutWidth: 2,
       layoutHeight: 2,
       cards: cardsFaceUp,
-      state: GameState.newGame,
+      state: GameMachineState.newGame,
       cardMatchCount: 0,
     );
   });
@@ -50,7 +50,7 @@ void main() {
       layoutWidth: 2,
       layoutHeight: 2,
       cards: startingGameModel.cards,
-      state: GameState.newGame,
+      state: GameMachineState.newGame,
       cardMatchCount: 0,
       durationSeconds: 10,
     );
@@ -73,14 +73,14 @@ void main() {
 
   test('copyWithCardFlags changes given values', () {
     var newGame = startingGameModel.copyWithCardFlags(
-      newState: GameState.noCardsSelected,
+      newState: GameMachineState.noCardsSelected,
       newCardMatchCount: 2,
       isFaceUp: false,
       isMatched: true,
       isSelected: true,
       isSelectable: true,
     );
-    expect(newGame.state, GameState.noCardsSelected);
+    expect(newGame.state, GameMachineState.noCardsSelected);
     expect(newGame.cardMatchCount, 2);
     expect(newGame.cards.every((card) => card.isFaceUp), false);
     expect(newGame.cards.every((card) => card.isMatched), true);
@@ -90,7 +90,7 @@ void main() {
 
   test('copyWithCardFlags does not change values not given', () {
     var gameWithNoChanges = startingGameModel.copyWithCardFlags();
-    expect(gameWithNoChanges.state, GameState.newGame);
+    expect(gameWithNoChanges.state, GameMachineState.newGame);
     expect(gameWithNoChanges.cardMatchCount, 0);
     expect(gameWithNoChanges.cards.every((card) => card.isFaceUp), true);
     expect(gameWithNoChanges.cards.every((card) => card.isMatched), false);
@@ -99,7 +99,7 @@ void main() {
 
     var gameWithOneFlagChanged =
         startingGameModel.copyWithCardFlags(isFaceUp: false);
-    expect(gameWithOneFlagChanged.state, GameState.newGame);
+    expect(gameWithOneFlagChanged.state, GameMachineState.newGame);
     expect(gameWithOneFlagChanged.cardMatchCount, 0);
     expect(gameWithOneFlagChanged.cards.every((card) => card.isFaceUp), false);
     expect(gameWithOneFlagChanged.cards.every((card) => card.isMatched), false);
@@ -109,8 +109,8 @@ void main() {
         gameWithOneFlagChanged.cards.every((card) => card.isSelectable), false);
 
     var gameWithStateChanged =
-        startingGameModel.copyWithCardFlags(newState: GameState.wonGame);
-    expect(gameWithStateChanged.state, GameState.wonGame);
+        startingGameModel.copyWithCardFlags(newState: GameMachineState.wonGame);
+    expect(gameWithStateChanged.state, GameMachineState.wonGame);
     expect(gameWithStateChanged.cardMatchCount, 0);
     expect(gameWithStateChanged.cards.every((card) => card.isFaceUp), true);
     expect(gameWithStateChanged.cards.every((card) => card.isMatched), false);
@@ -120,7 +120,7 @@ void main() {
 
     var gameWithMatchCountChanged =
         startingGameModel.copyWithCardFlags(newCardMatchCount: 1);
-    expect(gameWithMatchCountChanged.state, GameState.newGame);
+    expect(gameWithMatchCountChanged.state, GameMachineState.newGame);
     expect(gameWithMatchCountChanged.cardMatchCount, 1);
     expect(
         gameWithMatchCountChanged.cards.every((card) => card.isFaceUp), true);
@@ -143,14 +143,14 @@ void main() {
       isMatched: true,
     );
     var newGame = startingGameModel.copyWithNewCards(
-      newState: GameState.noCardsSelected,
+      newState: GameMachineState.noCardsSelected,
       newMatchCount: 1,
       replacementCards: {
         startingGameModel.cards[0]: newCard0,
         startingGameModel.cards[2]: newCard2,
       },
     );
-    expect(newGame.state, GameState.noCardsSelected);
+    expect(newGame.state, GameMachineState.noCardsSelected);
     expect(newGame.cardMatchCount, 1);
     expect(newGame.cards[0], newCard0);
     expect(newGame.cards[1], startingGameModel.cards[1]);
@@ -198,7 +198,7 @@ void main() {
     var newCard1 = startingGameModel.cards[1].copyWith(isSelected: true);
     var newCard3 = startingGameModel.cards[3].copyWith(isSelected: true);
     var newGame = startingGameModel.copyWithNewCards(
-      newState: GameState.twoCardsSelectedNotMatching,
+      newState: GameMachineState.twoCardsSelectedNotMatching,
       replacementCards: {
         startingGameModel.cards[1]: newCard1,
         startingGameModel.cards[3]: newCard3,
@@ -215,7 +215,7 @@ void main() {
     var newCard1 = startingGameModel.cards[1].copyWith(isSelected: true);
     var newCard3 = startingGameModel.cards[3].copyWith(isSelected: true);
     var newGame = startingGameModel.copyWithNewCards(
-      newState: GameState.twoCardsSelectedNotMatching,
+      newState: GameMachineState.twoCardsSelectedNotMatching,
       replacementCards: {
         startingGameModel.cards[1]: newCard1,
         startingGameModel.cards[3]: newCard3,

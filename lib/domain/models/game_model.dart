@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
+import '../game_logic/game_machine_state.dart';
 import 'card_faces.dart';
 import 'card_model.dart';
 import 'default_game_settings.dart';
-import 'game_state.dart';
 
 /// Models the state of a game of Memory, including game settings.
 ///
@@ -17,8 +17,9 @@ class GameModel {
   final int nonMatchingCardsFaceUpSeconds;
   final int _durationSeconds;
   final List<CardModel> cards;
-  final GameState state;
+  final GameMachineState state;
   final int cardMatchCount;
+  final String announcement;
 
   int get numberOfCards {
     return layoutHeight * layoutWidth;
@@ -42,6 +43,7 @@ class GameModel {
     @required this.cards,
     @required this.state,
     @required this.cardMatchCount,
+    this.announcement,
   }) : this._durationSeconds = durationSeconds;
 
   /// Create a new game model with random card faces in random order.
@@ -77,20 +79,43 @@ class GameModel {
       nonMatchingCardsFaceUpSeconds: nonMatchingCardsFaceUpSeconds,
       durationSeconds: durationSeconds,
       cards: cards,
-      state: GameState.newGame,
+      state: GameMachineState.newGame,
       cardMatchCount: 0,
+      announcement: _announceCardLayout(layoutWidth, cards),
     );
+  }
+
+  /// Announce the full face-up card layout for accessibility.
+  static String _announceCardLayout(int boardWidth, List<CardModel> cards) {
+    // Announce the game cards.
+    List<String> messages = [' The game shows the following cards:'];
+    messages.addAll(cards.asMap().map((int index, CardModel card) {
+      final String rowId = index % boardWidth == 0
+          ? ' row ${(index / boardWidth).floor() + 1}:'
+          : '';
+      return MapEntry(
+        index,
+        '$rowId ${CardFaces.getCardName(card.cardFaceAssetPath)},',
+      );
+    }).values);
+
+    String announcement = messages.join('');
+    print('GameStateMachine: _announceCardLayout(): $announcement');
+    return announcement;
   }
 
   /// Create a new game model by setting all cards to a new state and optionally
   /// changing the game state and/or the count of matched game cards.
+  ///
+  /// Clears any existing announcement.
   GameModel copyWithCardFlags({
-    GameState newState,
+    GameMachineState newState,
     int newCardMatchCount,
     bool isFaceUp,
     bool isMatched,
     bool isSelectable,
     bool isSelected,
+    String announcement,
   }) {
     List<CardModel> newCards = [];
     for (CardModel card in cards) {
@@ -105,21 +130,26 @@ class GameModel {
       cards: newCards,
       state: newState ?? state,
       cardMatchCount: newCardMatchCount ?? cardMatchCount,
+      announcement: announcement,
     );
   }
 
   /// Create a new game state by replacing specific cards, changing the game
   /// state, and optionally changing the count of matched game cards.
+  ///
+  /// Clears any existing announcement.
   GameModel copyWithNewCards({
-    @required GameState newState,
+    @required GameMachineState newState,
     @required Map<CardModel, CardModel> replacementCards,
     int newMatchCount,
+    String announcement,
   }) {
     // replace the modified cards and set the new game state
     return this.copyWith(
       cards: _replaceCardsInList(cards, replacementCards),
       state: newState,
       cardMatchCount: newMatchCount ?? cardMatchCount,
+      announcement: announcement,
     );
   }
 
@@ -159,12 +189,17 @@ class GameModel {
     return cards.where((element) => element.isSelected);
   }
 
-  /// Create a new game model by replacing all cards, game state, or the number
-  /// of matched cards. Can not change game settings, especially card count.
+  /// Create a new game model by replacing all cards, game state, announcement,
+  /// or the number of matched cards. Can not change game settings, especially
+  /// card count.
+  ///
+  /// Preserves any existing announcement, so override that value if you want it
+  /// cleared in the resulting copy.
   GameModel copyWith({
     List<CardModel> cards,
-    GameState state,
+    GameMachineState state,
     int cardMatchCount,
+    String announcement,
   }) {
     if (cards != null) {
       assert(layoutWidth * layoutHeight == cards.length);
@@ -178,6 +213,7 @@ class GameModel {
       cards: cards ?? this.cards,
       state: state ?? this.state,
       cardMatchCount: cardMatchCount ?? this.cardMatchCount,
+      announcement: announcement ?? this.announcement,
     );
   }
 }

@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:memory_game/models/card_faces.dart';
 
 import 'card_widget.dart';
-import 'game_logic/game_state_machine.dart';
-import 'models/card_model.dart';
-import 'models/game_model.dart';
-import 'models/game_state.dart';
+import '../../domain/game_logic/game_state_machine.dart';
+import '../../domain/models/card_faces.dart';
+import '../../domain/models/card_model.dart';
+import '../../domain/game_logic/game_machine_state.dart';
+import '../../domain/models/game_model.dart';
 import 'score_display_widget.dart';
 import 'timer_display_widget.dart';
 
@@ -77,7 +77,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
       () {
         _gameModel = GameStateMachine.setNextState(
           model: _gameModel,
-          newState: GameState.noCardsSelected,
+          newState: GameMachineState.noCardsSelected,
         );
         _gameStarted = true;
       },
@@ -188,7 +188,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
       const Duration(seconds: 1),
       (Timer timer) async {
         // print('time remaining: $_timeRemaining');
-        if (_gameModel.state == GameState.wonGame) {
+        if (_gameModel.state == GameMachineState.wonGame) {
           // If game has been won, stop the timer.
           timer.cancel();
         } else if (_timeRemaining == 0) {
@@ -197,7 +197,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
             timer.cancel();
             _gameModel = GameStateMachine.setNextState(
               model: _gameModel,
-              newState: GameState.lostGame,
+              newState: GameMachineState.lostGame,
             );
           });
           _showGameEnd();
@@ -224,21 +224,22 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
           model: _gameModel, cardSelected: card);
     });
 
-    if (_gameModel.state == GameState.oneCardSelected) {
+    if (_gameModel.state == GameMachineState.oneCardSelected) {
       final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
       if (MediaQuery.of(context).accessibleNavigation) {
         final String announcement = 'Selected $cardName.';
         // print('$announcement');
         await SemanticsService.announce(announcement, TextDirection.ltr);
       }
-    } else if (_gameModel.state == GameState.twoCardsSelectedNotMatching) {
+    } else if (_gameModel.state ==
+        GameMachineState.twoCardsSelectedNotMatching) {
       // Set delayed action to flip non-matching cards back over.
       Future.delayed(
           Duration(seconds: _gameModel.nonMatchingCardsFaceUpSeconds), () {
         setState(() {
           _gameModel = GameStateMachine.setNextState(
             model: _gameModel,
-            newState: GameState.noCardsSelected,
+            newState: GameMachineState.noCardsSelected,
           );
         });
       });
@@ -256,7 +257,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
         // print('$announcement');
         await SemanticsService.announce(announcement, TextDirection.ltr);
       }
-    } else if (_gameModel.state == GameState.noCardsSelected &&
+    } else if (_gameModel.state == GameMachineState.noCardsSelected &&
         MediaQuery.of(context).accessibleNavigation) {
       final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
       final String message =
@@ -265,7 +266,7 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
       await SemanticsService.announce(message, TextDirection.ltr);
     }
 
-    if (_gameModel.state == GameState.wonGame) {
+    if (_gameModel.state == GameMachineState.wonGame) {
       _showGameEnd();
     }
   }
@@ -275,11 +276,12 @@ class _GameBoardWidgetState extends State<GameBoardWidget> {
   /// Presently displays a snackbar with the option to return to the HomePage.
   /// Called from game timer (in _startGameTimer()) and _onCardSelected().
   void _showGameEnd() {
-    if (_gameModel.state == GameState.wonGame ||
-        _gameModel.state == GameState.lostGame) {
+    if (_gameModel.state == GameMachineState.wonGame ||
+        _gameModel.state == GameMachineState.lostGame) {
       // Temporary UI: Replace with an alert dialog or on-screen message.
-      final String message =
-          _gameModel.state == GameState.wonGame ? 'You won!' : 'Game over.';
+      final String message = _gameModel.state == GameMachineState.wonGame
+          ? 'You won!'
+          : 'Game over.';
       final scaffold = Scaffold.of(context);
       scaffold.showSnackBar(
         SnackBar(

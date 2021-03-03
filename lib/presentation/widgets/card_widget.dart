@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:memory_game/orchestration/game_cubit.dart';
 
-import 'models/card_faces.dart';
-import 'models/card_model.dart';
+import '../../domain/models/card_faces.dart';
+import '../../domain/models/card_model.dart';
 
 /// Card view widget.
 ///
@@ -12,11 +14,11 @@ class CardWidget extends StatelessWidget {
   const CardWidget({
     Key key,
     @required this.cardModel,
-    @required this.selectionCallback,
+    this.selectionCallback, //TODO: Remove
   }) : super(key: key);
 
   final CardModel cardModel;
-  final Function selectionCallback;
+  final Function selectionCallback; // TODO: Remove
 
   // Card back image path is 'assets/svg/question-mark-round-line.svg'
   static final SvgPicture faceDownCard = SvgPicture.asset(
@@ -64,10 +66,15 @@ class CardWidget extends StatelessWidget {
         ),
         onTap: () {
           if (cardModel.isSelectable) {
-            selectionCallback(cardModel);
+            _onCardSelected(context);
+            // selectionCallback(cardModel); TODO: Remove
           }
         },
       ),
     );
+  }
+
+  void _onCardSelected(BuildContext context) {
+    BlocProvider.of<GameCubit>(context).cardSelected(cardModel);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:memory_game/memory_app.dart';
+import 'package:memory_game/presentation/memory_app.dart';
 
 void main() {
   testWidgets('Home screen has 3 New Game buttons',

@@ -1,8 +1,8 @@
-import 'package:memory_game/game_logic/game_state_machine.dart';
-import 'package:memory_game/models/card_faces.dart';
-import 'package:memory_game/models/card_model.dart';
-import 'package:memory_game/models/game_model.dart';
-import 'package:memory_game/models/game_state.dart';
+import 'package:memory_game/domain/game_logic/game_machine_state.dart';
+import 'package:memory_game/domain/game_logic/game_state_machine.dart';
+import 'package:memory_game/domain/models/card_faces.dart';
+import 'package:memory_game/domain/models/card_model.dart';
+import 'package:memory_game/domain/models/game_model.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -32,7 +32,7 @@ void main() {
       layoutWidth: 2,
       layoutHeight: 2,
       cards: cardsFaceUp,
-      state: GameState.newGame,
+      state: GameMachineState.newGame,
       cardMatchCount: 0,
     );
   });
@@ -45,9 +45,9 @@ void main() {
     test('newGame to noCardsSelected turns all cards face down', () {
       GameModel newModel = GameStateMachine.setNextState(
         model: startingGameModel,
-        newState: GameState.noCardsSelected,
+        newState: GameMachineState.noCardsSelected,
       );
-      expect(newModel.state, GameState.noCardsSelected);
+      expect(newModel.state, GameMachineState.noCardsSelected);
       expect(newModel.cardMatchCount, 0);
       expect(newModel.cards, predicate((List<CardModel> cards) {
         for (CardModel card in cards) {
@@ -64,7 +64,7 @@ void main() {
 
     test('noCardsSelected plus first card turns card face up', () {
       GameModel gameModel = startingGameModel.copyWithCardFlags(
-        newState: GameState.noCardsSelected,
+        newState: GameMachineState.noCardsSelected,
         isFaceUp: false,
         isSelectable: true,
         isSelected: false,
@@ -75,7 +75,7 @@ void main() {
         model: gameModel,
         cardSelected: gameModel.cards[0],
       );
-      expect(newModel.state, GameState.oneCardSelected);
+      expect(newModel.state, GameMachineState.oneCardSelected);
       expect(newModel.cardMatchCount, 0);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -105,7 +105,7 @@ void main() {
         'oneCardSelected plus matching card shows cards face up and highlighted',
         () {
       GameModel gameModel = startingGameModel.copyWithCardFlags(
-        newState: GameState.noCardsSelected,
+        newState: GameMachineState.noCardsSelected,
         isFaceUp: false,
         isSelectable: true,
         isSelected: false,
@@ -113,7 +113,7 @@ void main() {
         newCardMatchCount: 0,
       );
       gameModel = gameModel.copyWithNewCards(
-        newState: GameState.oneCardSelected,
+        newState: GameMachineState.oneCardSelected,
         replacementCards: {
           gameModel.cards[0]: gameModel.cards[0].copyWith(
             isFaceUp: true,
@@ -126,7 +126,7 @@ void main() {
         model: gameModel,
         cardSelected: gameModel.cards[3],
       );
-      expect(newModel.state, GameState.noCardsSelected);
+      expect(newModel.state, GameMachineState.noCardsSelected);
       expect(newModel.cardMatchCount, 1);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -156,7 +156,7 @@ void main() {
         'oneCardSelected plus non-matching card shows cards face up and not highlighted',
         () {
       GameModel gameModel = startingGameModel.copyWithCardFlags(
-        newState: GameState.noCardsSelected,
+        newState: GameMachineState.noCardsSelected,
         isFaceUp: false,
         isSelectable: true,
         isSelected: false,
@@ -164,7 +164,7 @@ void main() {
         newCardMatchCount: 0,
       );
       gameModel = gameModel.copyWithNewCards(
-        newState: GameState.oneCardSelected,
+        newState: GameMachineState.oneCardSelected,
         replacementCards: {
           gameModel.cards[0]: gameModel.cards[0].copyWith(
             isFaceUp: true,
@@ -177,7 +177,7 @@ void main() {
         model: gameModel,
         cardSelected: gameModel.cards[1],
       );
-      expect(newModel.state, GameState.twoCardsSelectedNotMatching);
+      expect(newModel.state, GameMachineState.twoCardsSelectedNotMatching);
       expect(newModel.cardMatchCount, 0);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -207,7 +207,7 @@ void main() {
         'two non-matching cards and state set to noCardsSelected flips cards over',
         () {
       GameModel gameModel = startingGameModel.copyWithNewCards(
-        newState: GameState.twoCardsSelectedNotMatching,
+        newState: GameMachineState.twoCardsSelectedNotMatching,
         newMatchCount: 0,
         replacementCards: {
           startingGameModel.cards[0]: startingGameModel.cards[0].copyWith(
@@ -238,9 +238,9 @@ void main() {
       );
       GameModel newModel = GameStateMachine.setNextState(
         model: gameModel,
-        newState: GameState.noCardsSelected,
+        newState: GameMachineState.noCardsSelected,
       );
-      expect(newModel.state, GameState.noCardsSelected);
+      expect(newModel.state, GameMachineState.noCardsSelected);
       expect(newModel.cardMatchCount, 0);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -261,7 +261,7 @@ void main() {
         'can pick a card with two non-matching cards displayed and it is selected',
         () {
       GameModel gameModel = startingGameModel.copyWithNewCards(
-        newState: GameState.twoCardsSelectedNotMatching,
+        newState: GameMachineState.twoCardsSelectedNotMatching,
         newMatchCount: 0,
         replacementCards: {
           startingGameModel.cards[0]: startingGameModel.cards[0].copyWith(
@@ -294,7 +294,7 @@ void main() {
         model: gameModel,
         cardSelected: gameModel.cards[3],
       );
-      expect(newModel.state, GameState.oneCardSelected);
+      expect(newModel.state, GameMachineState.oneCardSelected);
       expect(newModel.cardMatchCount, 0);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -324,7 +324,7 @@ void main() {
         'the last matching card shows all cards face up and highlighted and game won',
         () {
       GameModel gameModel = startingGameModel.copyWithNewCards(
-        newState: GameState.oneCardSelected,
+        newState: GameMachineState.oneCardSelected,
         newMatchCount: 1,
         replacementCards: {
           startingGameModel.cards[0]: startingGameModel.cards[0].copyWith(
@@ -357,7 +357,7 @@ void main() {
         model: gameModel,
         cardSelected: gameModel.cards[2],
       );
-      expect(newModel.state, GameState.wonGame);
+      expect(newModel.state, GameMachineState.wonGame);
       expect(newModel.cardMatchCount, 2);
       expect(newModel.cards, predicate(
         (List<CardModel> cards) {
@@ -379,7 +379,7 @@ void main() {
     test('newGame to lostGame shows all cards face up, non-selectable', () {
       GameModel newModel = GameStateMachine.setNextState(
         model: startingGameModel,
-        newState: GameState.lostGame,
+        newState: GameMachineState.lostGame,
       );
       _testLostGame(newModel);
     });
@@ -387,8 +387,9 @@ void main() {
     test('noCardsSelected to lostGame shows all cards face up, non-selectable',
         () {
       GameModel newModel = GameStateMachine.setNextState(
-        model: startingGameModel.copyWith(state: GameState.noCardsSelected),
-        newState: GameState.lostGame,
+        model:
+            startingGameModel.copyWith(state: GameMachineState.noCardsSelected),
+        newState: GameMachineState.lostGame,
       );
       _testLostGame(newModel);
     });
@@ -396,8 +397,9 @@ void main() {
     test('oneCardSelected to lostGame shows all cards face up, non-selectable',
         () {
       GameModel newModel = GameStateMachine.setNextState(
-        model: startingGameModel.copyWith(state: GameState.oneCardSelected),
-        newState: GameState.lostGame,
+        model:
+            startingGameModel.copyWith(state: GameMachineState.oneCardSelected),
+        newState: GameMachineState.lostGame,
       );
       _testLostGame(newModel);
     });
@@ -407,8 +409,8 @@ void main() {
         () {
       GameModel newModel = GameStateMachine.setNextState(
         model: startingGameModel.copyWith(
-            state: GameState.twoCardsSelectedNotMatching),
-        newState: GameState.lostGame,
+            state: GameMachineState.twoCardsSelectedNotMatching),
+        newState: GameMachineState.lostGame,
       );
       _testLostGame(newModel);
     });
@@ -439,7 +441,7 @@ void main() {
     test('noCardSelected to any state other than lostGame throws Exception',
         () {
       GameModel gameModel =
-          startingGameModel.copyWith(state: GameState.noCardsSelected);
+          startingGameModel.copyWith(state: GameMachineState.noCardsSelected);
 
       _setNewGameStateThrowsException(gameModel);
       _setNoCardsSelectedGameStateThrowsException(gameModel);
@@ -451,7 +453,7 @@ void main() {
     test('oneCardSelected to any state other than lostGame throws Exception',
         () {
       GameModel gameModel =
-          startingGameModel.copyWith(state: GameState.oneCardSelected);
+          startingGameModel.copyWith(state: GameMachineState.oneCardSelected);
 
       _setNewGameStateThrowsException(gameModel);
       _setNoCardsSelectedGameStateThrowsException(gameModel);
@@ -464,7 +466,7 @@ void main() {
         'twoCardsSelectedNotMatching to any state other than lostGame or noCardsSelected throws Exception',
         () {
       GameModel gameModel = startingGameModel.copyWith(
-          state: GameState.twoCardsSelectedNotMatching);
+          state: GameMachineState.twoCardsSelectedNotMatching);
       _setNewGameStateThrowsException(gameModel);
       _setOneCardSelectedGameStateThrowsException(gameModel);
       _setTwoCardsSelectedNotMatchingThrowsException(gameModel);
@@ -478,7 +480,7 @@ void _setNoCardsSelectedGameStateThrowsException(GameModel gameModel) {
       () => {
             GameStateMachine.setNextState(
               model: gameModel,
-              newState: GameState.noCardsSelected,
+              newState: GameMachineState.noCardsSelected,
             )
           },
       throwsException);
@@ -489,7 +491,7 @@ void _setWonGameStateThrowsException(GameModel gameModel) {
       () => {
             GameStateMachine.setNextState(
               model: gameModel,
-              newState: GameState.wonGame,
+              newState: GameMachineState.wonGame,
             )
           },
       throwsException);
@@ -500,7 +502,7 @@ void _setTwoCardsSelectedNotMatchingThrowsException(GameModel gameModel) {
       () => {
             GameStateMachine.setNextState(
               model: gameModel,
-              newState: GameState.twoCardsSelectedNotMatching,
+              newState: GameMachineState.twoCardsSelectedNotMatching,
             )
           },
       throwsException);
@@ -511,7 +513,7 @@ void _setOneCardSelectedGameStateThrowsException(GameModel gameModel) {
       () => {
             GameStateMachine.setNextState(
               model: gameModel,
-              newState: GameState.oneCardSelected,
+              newState: GameMachineState.oneCardSelected,
             )
           },
       throwsException);
@@ -522,14 +524,14 @@ void _setNewGameStateThrowsException(GameModel gameModel) {
       () => {
             GameStateMachine.setNextState(
               model: gameModel,
-              newState: GameState.newGame,
+              newState: GameMachineState.newGame,
             )
           },
       throwsException);
 }
 
 void _testLostGame(GameModel newModel) {
-  expect(newModel.state, GameState.lostGame);
+  expect(newModel.state, GameMachineState.lostGame);
   expect(newModel.cardMatchCount, 0);
   expect(newModel.cards, predicate((List<CardModel> cards) {
     for (CardModel card in cards) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:memory_game/timer_display_widget.dart';
+import 'package:memory_game/presentation/widgets/timer_display_widget.dart';
 
 void main() {
   testWidgets('Timer display shows time remaining',

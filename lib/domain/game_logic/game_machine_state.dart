@@ -1,5 +1,5 @@
 /// Specifies the valid states of a GameModel.
-enum GameState {
+enum GameMachineState {
   newGame,
   noCardsSelected,
   oneCardSelected,

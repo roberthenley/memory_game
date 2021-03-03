@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:memory_game/card_widget.dart';
-import 'package:memory_game/game_page.dart';
-import 'package:memory_game/models/card_faces.dart';
-import 'package:memory_game/models/card_model.dart';
-import 'package:memory_game/models/game_model.dart';
-import 'package:memory_game/models/game_state.dart';
+import 'package:memory_game/domain/game_logic/game_machine_state.dart';
+import 'package:memory_game/domain/models/card_faces.dart';
+import 'package:memory_game/domain/models/card_model.dart';
+import 'package:memory_game/domain/models/game_model.dart';
+import 'package:memory_game/presentation/pages/game_page.dart';
+import 'package:memory_game/presentation/widgets/card_widget.dart';
 
 void main() {
   GameModel startingGameModel;
@@ -36,7 +36,7 @@ void main() {
       layoutWidth: 2,
       layoutHeight: 2,
       cards: cardsFaceUp,
-      state: GameState.newGame,
+      state: GameMachineState.newGame,
       cardMatchCount: 0,
       durationSeconds: 60,
       initialFaceUpSeconds: 5,

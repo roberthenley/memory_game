@@ -21,20 +21,23 @@ Run the integration tests with:
 ```flutter drive --driver=test_driver/integration_test.dart --target=integration_test/memory_2x2_game_test.dart```
 
 ## Code structure
+- domain/game_logic/game_machine_state.dart - enumerates the allowed game state machine states.
+- domain/game_logic/game_state_machine.dart - state machine the controls game play: given the current game model and a player move or timer state change, produces a new game model.
+- domain/models/card_faces.dart - contains card face asset paths and helper methods to pick a random selection of them for each game.
+- domain/models/card_model.dart - immutably represents the state of a card.
+- domain/models/default_game_settings.dart - contains default game values for layout and timer delays.
+- domain/models/game_model.dart - immutably represents the state of a game.
+- orchestration/game_cubit.dart - a Cubit subclass which orchestrates game interactions.
+- orchestration/game_state.dart - the game orchestration state streamed from GameCubit, includes game domain model, timer, etc.
 - main.dart - the main() method.
-- memory_app.dart - the application container widget.
-- home_page.dart - the HomePage widget with a button to route to a GamePage for a new game.
-- game_page.dart - the GamePage widget which scaffolds a GameBoardWidget.
-- game_board_widget.dart - a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
-- card_widget.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardWidget to update game state on card selection.
-- score_display_widget.dart - a stateless widget that displays the matched and total card pairs.
-- timer_display_widget.dart - a stateless widget that displays the remaining game time.
-- models/card_faces.dart - contains card face asset paths and helper methods to pick a random selection of them for each game.
-- models/default_game_settings.dart - contains default game values for layout and timer delays.
-- models/card_model.dart - immutably represents the state of a card.
-- models/game_model.dart - immutably represents the state of a game.
-- models/game_state.dart - enumerates the allowed game states.
-- logic/game_state_machine.dart - state machine the controls game play: given the current game model and a player move or timer state change, produces a new game model.
+- presentation/memory_app.dart - the application container widget.
+- presentation/pages/home_page.dart - the HomePage widget with a button to route to a GamePage for a new game.
+- presentation/pages/game_page.dart - the GamePage widget which scaffolds a GameBoardWidget.
+- presentation/widgets/stateful_game_board_widget.dart - Deprecated: a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
+- presentation/widgets/stateless_game_board_widget.dart - a stateless widget that displays the game board from the GameCubit. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
+- presentation/widgets/card_widget.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardWidget to update game state on card selection.
+- presentation/widgets/score_display_widget.dart - a stateless widget that displays the matched and total card pairs.
+- presentation/widgets/timer_display_widget.dart - a stateless widget that displays the remaining game time.
 
 ## Basic game TO DO list
 - DONE: Create skeleton app from starter project: HomePage and "New game" button
@@ -74,12 +77,10 @@ Run the integration tests with:
 - DONE: GameModel unit tests
 - DONE: Widget tests for GameBoardWidget
 - DONE: Integration tests using new integration_test package
+- IN PROGRESS: Refactor to BLoC pattern (using a Cubit); accessibility announcements TBD.
 - Add custom app icon
 
 ## Potential refactorings / design decisions TBD
-- Make game state machine a BLoC?
-- Adopt Provider to distribute state?
-- Make Card widget stateful?
 - Use bdd_widget_tests package for widget testing in Gherkin?
 - Performance: will card model state transitions that don't effect visibility cost too much to rebuild?
 
@@ -96,5 +97,6 @@ Run the integration tests with:
 - Expand integration tests
 
 ## Known issues
-- GameBoardWidget doesn't scale properly to the display without scrolling.
-- The app architecture is not idiomatic Flutter. For example, the GameStateMachine draws more on my experience from Elm.
+- GameBoardWidget doesn't scale properly to the display without scrolling
+- Code may not be idiomatic Flutter
+

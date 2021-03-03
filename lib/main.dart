@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'memory_app.dart';
+import 'presentation/memory_app.dart';
 
 void main() {
   runApp(MemoryApp());

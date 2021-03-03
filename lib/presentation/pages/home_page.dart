@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/models/game_model.dart';
 import 'game_page.dart';
-import 'models/game_model.dart';
 
 /// Home page widget.
 ///

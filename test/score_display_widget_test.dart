@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:memory_game/score_display_widget.dart';
+import 'package:memory_game/presentation/widgets/score_display_widget.dart';
 
 void main() {
   testWidgets('Score display shows current score and total',

@@ -1,6 +1,7 @@
-import 'package:memory_game/models/card_model.dart';
-import 'package:memory_game/models/game_model.dart';
-import 'package:memory_game/models/game_state.dart';
+import 'package:memory_game/domain/game_logic/game_machine_state.dart';
+import 'package:memory_game/domain/models/card_faces.dart';
+import 'package:memory_game/domain/models/card_model.dart';
+import 'package:memory_game/domain/models/game_model.dart';
 import 'package:meta/meta.dart';
 
 class GameStateMachine {
@@ -9,7 +10,7 @@ class GameStateMachine {
   /// This method is called by game timers.
   static GameModel setNextState({
     @required GameModel model,
-    GameState newState,
+    GameMachineState newState,
   }) =>
       _nextState(model: model, newState: newState);
 
@@ -28,7 +29,7 @@ class GameStateMachine {
   /// a card selection.
   static GameModel _nextState({
     @required GameModel model,
-    GameState newState,
+    GameMachineState newState,
     CardModel cardSelected,
   }) {
     assert(newState == null || cardSelected == null);
@@ -36,49 +37,52 @@ class GameStateMachine {
     //   '_nextState: current state: ${model.state}, new state: $newState, cardSelected: ${cardSelected?.cardFaceAssetPath ?? "null"}',
     // );
 
-    if (model.state == GameState.newGame &&
-        newState == GameState.noCardsSelected) {
+    if (model.state == GameMachineState.newGame &&
+        newState == GameMachineState.noCardsSelected) {
       // print('_nextState case 1: transition to cards face-down');
       // Turn all cards face down and make them selectable.
       return model.copyWithCardFlags(
         newState: newState,
         isFaceUp: false,
         isSelectable: true,
+        announcement: "Begin game.",
       );
     }
-    if (model.state == GameState.noCardsSelected && cardSelected != null) {
+    if (model.state == GameMachineState.noCardsSelected &&
+        cardSelected != null) {
       // print('_nextState case 2: first card selection');
       return _handleFirstCardSelection(cardSelected, model);
     }
-    if (model.state == GameState.oneCardSelected && cardSelected != null) {
+    if (model.state == GameMachineState.oneCardSelected &&
+        cardSelected != null) {
       // print('_nextState case 3: second card selection');
       return _handleSecondCardSelection(model, cardSelected);
     }
-    if (model.state == GameState.twoCardsSelectedNotMatching &&
+    if (model.state == GameMachineState.twoCardsSelectedNotMatching &&
         cardSelected != null) {
       // print(
       //     '_nextState case 4: selected a card while 2 non-matching cards are displayed');
       return _handleCardSelectionWhileNonMatchingCardsDisplayed(
           model, cardSelected);
     }
-    if (model.state == GameState.twoCardsSelectedNotMatching &&
-        newState == GameState.noCardsSelected) {
+    if (model.state == GameMachineState.twoCardsSelectedNotMatching &&
+        newState == GameMachineState.noCardsSelected) {
       // print('_nextState case 5: flip 2 non-matching cards face-down');
       return _handleFlippingNonMatchingCardsFaceDown(model, newState);
     }
-    if (model.state == GameState.wonGame) {
+    if (model.state == GameMachineState.wonGame) {
       // print('_nextState case 6: game won already, no-op');
       return model; // No-op
     }
-    if (newState == GameState.lostGame) {
-      if (model.state == GameState.lostGame) {
+    if (newState == GameMachineState.lostGame) {
+      if (model.state == GameMachineState.lostGame) {
         // print('_nextState case 7: game lost already, no-op');
         return model; // No-op
       }
       // print('_nextState case 8: game was just lost');
       // Flip all cards face-up and unselectable.
       return model.copyWithCardFlags(
-        newState: GameState.lostGame,
+        newState: GameMachineState.lostGame,
         isFaceUp: true,
         isSelectable: false,
       );
@@ -98,8 +102,9 @@ class GameStateMachine {
     CardModel newCard = cardSelected.copyWith(
         isFaceUp: true, isSelected: true, isSelectable: false);
     return model.copyWithNewCards(
-      newState: GameState.oneCardSelected,
+      newState: GameMachineState.oneCardSelected,
       replacementCards: {cardSelected: newCard},
+      announcement: _announceOneCardSelected(cardSelected),
     );
   }
 
@@ -132,9 +137,10 @@ class GameStateMachine {
     // feature?! The game could skip from IN_GAME_2_CARDS_SELECTED_NO_MATCH to
     // IN_GAME_1_CARD_SELECTED directly...
     if (isMatch) {
-      GameState newState = model.cardMatchCount + 1 == model.numberOfUniqueCards
-          ? GameState.wonGame
-          : GameState.noCardsSelected;
+      GameMachineState newState =
+          model.cardMatchCount + 1 == model.numberOfUniqueCards
+              ? GameMachineState.wonGame
+              : GameMachineState.noCardsSelected;
       // print('_handleSecondCardSelection: isMatch; new game state = $newState');
       return model.copyWithNewCards(
         newState: newState,
@@ -147,13 +153,16 @@ class GameStateMachine {
           cardSelected: newCardSelected,
         },
         newMatchCount: model.cardMatchCount + 1,
+        announcement: _announceTwoCardsMatching(model, cardSelected),
       );
     } else {
       // print(
       //     '_handleSecondCardSelection: isMatch false; new game state = TWO_CARDS_SELECTED_NOT_MATCHING');
       return model.copyWithNewCards(
-        newState: GameState.twoCardsSelectedNotMatching,
+        newState: GameMachineState.twoCardsSelectedNotMatching,
         replacementCards: {cardSelected: newCardSelected},
+        announcement:
+            _announceTwoCardsNotMatching(firstCardSelected, cardSelected),
       );
     }
   }
@@ -196,8 +205,9 @@ class GameStateMachine {
     //     '_handleCardSelectionWhileNonMatchingCardsDisplayed new card is ${cardSelected.cardFaceAssetPath}');
     replacementCards.putIfAbsent(cardSelected, () => newCard);
     return model.copyWithNewCards(
-      newState: GameState.oneCardSelected,
+      newState: GameMachineState.oneCardSelected,
       replacementCards: replacementCards,
+      announcement: _announceOneCardSelected(cardSelected),
     );
   }
 
@@ -205,12 +215,37 @@ class GameStateMachine {
   ///
   /// Timer switching state. Turn non-matching cards face-down again.
   static GameModel _handleFlippingNonMatchingCardsFaceDown(
-      GameModel model, GameState newState) {
+      GameModel model, GameMachineState newState) {
     // print('_handleFlippingNonMatchingCardsFaceDown');
     Map<CardModel, CardModel> replacementCards = _flipNonMatchingCards(model);
     return model.copyWithNewCards(
       newState: newState,
       replacementCards: replacementCards,
     );
+  }
+
+  static String _announceOneCardSelected(CardModel card) {
+    final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
+    final String announcement = 'Selected $cardName.';
+    print('GameStateMachine: _announceOneCardSelected(): $announcement');
+    return announcement;
+  }
+
+  static String _announceTwoCardsNotMatching(CardModel card1, CardModel card2) {
+    final String firstCardName = CardFaces.getCardName(card1.cardFaceAssetPath);
+    final String secondCardName =
+        CardFaces.getCardName(card2.cardFaceAssetPath);
+    final String announcement =
+        'Selected $firstCardName and $secondCardName which do not match.';
+    print('GameStateMachine: _announceTwoCardsNotMatching(): $announcement');
+    return announcement;
+  }
+
+  static String _announceTwoCardsMatching(GameModel gameModel, CardModel card) {
+    final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
+    final String announcement =
+        'Matched two $cardName cards. Score is now ${gameModel.cardMatchCount + 1} out of ${gameModel.numberOfUniqueCards}.';
+    print('GameStateMachine: _announceTwoCardsMatching(): $announcement');
+    return announcement;
   }
 }
