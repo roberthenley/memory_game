@@ -77,7 +77,7 @@ Run the integration tests with:
 - DONE: GameModel unit tests
 - DONE: Widget tests for GameBoardWidget
 - DONE: Integration tests using new integration_test package
-- IN PROGRESS: Refactor to BLoC pattern (using a Cubit); accessibility announcements TBD.
+- IN PROGRESS: Refactor to BLoC pattern (using a Cubit); accessibility announcements fixed; needs more testing.
 - Add custom app icon
 
 ## Potential refactorings / design decisions TBD

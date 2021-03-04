@@ -227,7 +227,7 @@ class GameStateMachine {
   static String _announceOneCardSelected(CardModel card) {
     final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
     final String announcement = 'Selected $cardName.';
-    print('GameStateMachine: _announceOneCardSelected(): $announcement');
+    // print('GameStateMachine: _announceOneCardSelected(): $announcement');
     return announcement;
   }
 
@@ -237,7 +237,7 @@ class GameStateMachine {
         CardFaces.getCardName(card2.cardFaceAssetPath);
     final String announcement =
         'Selected $firstCardName and $secondCardName which do not match.';
-    print('GameStateMachine: _announceTwoCardsNotMatching(): $announcement');
+    // print('GameStateMachine: _announceTwoCardsNotMatching(): $announcement');
     return announcement;
   }
 
@@ -245,7 +245,7 @@ class GameStateMachine {
     final String cardName = CardFaces.getCardName(card.cardFaceAssetPath);
     final String announcement =
         'Matched two $cardName cards. Score is now ${gameModel.cardMatchCount + 1} out of ${gameModel.numberOfUniqueCards}.';
-    print('GameStateMachine: _announceTwoCardsMatching(): $announcement');
+    // print('GameStateMachine: _announceTwoCardsMatching(): $announcement');
     return announcement;
   }
 }

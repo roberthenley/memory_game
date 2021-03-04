@@ -50,13 +50,13 @@ class StatelessGameBoardWidget extends StatelessWidget {
 
   /// Show game end notification: win or lose.
   ///
+  /// Called when game timer ends.
   /// Presently displays a snackbar with the option to return to the HomePage.
-  /// Called from game timer (in _startGameTimer()) and _onCardSelected().
+  /// TODO: Replace end game UI with an alert dialog or on-screen message.
   void _showGameEnd(BuildContext context, GameModel gameModel) {
     if (gameModel.state == GameMachineState.wonGame ||
         gameModel.state == GameMachineState.lostGame) {
       Future.delayed(Duration(seconds: 0), () {
-        // Temporary UI: Replace with an alert dialog or on-screen message.
         final String message = gameModel.state == GameMachineState.wonGame
             ? 'You won!'
             : 'Game over.';

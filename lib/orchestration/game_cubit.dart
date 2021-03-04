@@ -63,14 +63,38 @@ class GameCubit extends Cubit<GameState> {
         ),
       );
 
-  void cardSelected(CardModel card) => emit(
-        state.copyWith(
-          gameModel: GameStateMachine.nextStateFromCard(
-            model: state.gameModel,
-            cardSelected: card,
-          ),
-        ),
-      );
+  void cardSelected(CardModel card) {
+    GameState nextState = state.copyWith(
+      gameModel: GameStateMachine.nextStateFromCard(
+        model: state.gameModel,
+        cardSelected: card,
+      ),
+    );
+    if (nextState.gameModel.state ==
+        GameMachineState.twoCardsSelectedNotMatching) {
+      // Set delayed action to flip non-matching cards back over.
+      var delaySeconds = nextState.gameModel.nonMatchingCardsFaceUpSeconds;
+      try {
+        Future.delayed(Duration(seconds: delaySeconds), () {
+          // Verify game state machine still has 2 non-matching cards face up.
+          // (The user could have selected a new card, preempting this delayed
+          // action.)
+          if (state.gameModel.state ==
+              GameMachineState.twoCardsSelectedNotMatching) {
+            emit(state.copyWith(
+              gameModel: GameStateMachine.setNextState(
+                model: nextState.gameModel,
+                newState: GameMachineState.noCardsSelected,
+              ),
+            ));
+          }
+        });
+      } catch (e, s) {
+        print(s);
+      }
+    }
+    emit(nextState);
+  }
 
   void _timerTickDown() => emit(
         state.copyWith(timeRemaining: state.timeRemaining - 1),

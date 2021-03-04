@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/models/game_model.dart';
@@ -25,12 +26,12 @@ class GamePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: Text('Memory')),
         body: SafeArea(
-          // child: BlocBuilder<GameCubit, GameState>(
           child: BlocConsumer<GameCubit, GameState>(
             listener: (listenerContext, state) {
               _announce(state.gameModel.announcement);
             },
-            listenWhen: (_, newState) => _hasAnnouncement(newState),
+            listenWhen: (oldState, newState) =>
+                _hasNewAnnouncement(oldState, newState),
             builder: (builderContext, state) => StatelessGameBoardWidget(
               timedGame: timedGame,
             ),
@@ -41,17 +42,24 @@ class GamePage extends StatelessWidget {
   }
 
   /// Determine if the game state has an announcement.
-  static bool _hasAnnouncement(GameState state) {
-    bool hasAnnouncement = state.gameModel.announcement?.isNotEmpty ?? false;
-    // print('GamePage _hasAnnouncement: $hasAnnouncement');
-    return hasAnnouncement;
+  static bool _hasNewAnnouncement(GameState oldState, GameState newState) {
+    if (oldState == newState) return false;
+
+    var oldAnnouncement = oldState.gameModel.announcement;
+    bool oldStateHasAnnouncement = oldAnnouncement?.isNotEmpty ?? false;
+    var newAnnouncement = newState.gameModel.announcement;
+    bool newStateHasAnnouncement = newAnnouncement?.isNotEmpty ?? false;
+    bool hasNewAnnouncement = newStateHasAnnouncement &&
+        (!oldStateHasAnnouncement || oldAnnouncement != newAnnouncement);
+    // print('GamePage _hasNewAnnouncement: $hasNewAnnouncement');
+    return hasNewAnnouncement;
   }
 
   /// Announce messages for accessibility.
   void _announce(String message) async {
-    // if (message?.isNotEmpty ?? false) {
-    //   print('GamePage announcing: $message');
-    //   await SemanticsService.announce(message, TextDirection.ltr);
-    // }
+    if (message?.isNotEmpty ?? false) {
+      // print('GamePage announcing: $message');
+      await SemanticsService.announce(message, TextDirection.ltr);
+    }
   }
 }
