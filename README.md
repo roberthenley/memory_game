@@ -33,8 +33,7 @@ Run the integration tests with:
 - presentation/memory_app.dart - the application container widget.
 - presentation/pages/home_page.dart - the HomePage widget with a button to route to a GamePage for a new game.
 - presentation/pages/game_page.dart - the GamePage widget which scaffolds a GameBoardWidget.
-- presentation/widgets/stateful_game_board_widget.dart - Deprecated: a stateful widget that displays the game board from a GameModel and handles all user interactions. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
-- presentation/widgets/stateless_game_board_widget.dart - a stateless widget that displays the game board from the GameCubit. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
+- presentation/widgets/game_board_widget.dart - a stateless widget that displays the game board from the GameCubit. Delegates to ScoreDisplayWidget, TimerDisplayWidget, and a GridView of CardWidgets.
 - presentation/widgets/card_widget.dart - a stateless widget that displays a CardModel. Calls back to a method in GameBoardWidget to update game state on card selection.
 - presentation/widgets/score_display_widget.dart - a stateless widget that displays the matched and total card pairs.
 - presentation/widgets/timer_display_widget.dart - a stateless widget that displays the remaining game time.
@@ -77,7 +76,7 @@ Run the integration tests with:
 - DONE: GameModel unit tests
 - DONE: Widget tests for GameBoardWidget
 - DONE: Integration tests using new integration_test package
-- IN PROGRESS: Refactor to BLoC pattern (using a Cubit); accessibility announcements fixed; needs more testing.
+- DONE: Refactor to BLoC pattern (using a Cubit)
 - Add custom app icon
 
 ## Potential refactorings / design decisions TBD
@@ -85,18 +84,18 @@ Run the integration tests with:
 - Performance: will card model state transitions that don't effect visibility cost too much to rebuild?
 
 ## Additional features TBD
+- Convert to Flutter 2 with null safety
 - Improve win/loss notification UI
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Add Golden tests?
 - Animate card flipping (consider leveraging the flip_card package)
 - Internationalization
 - Persistent application state
-- Transition to Null Safety
 - Mute the white/black color contrast slightly
 - Support Dark Mode
 - Expand integration tests
 
 ## Known issues
 - GameBoardWidget doesn't scale properly to the display without scrolling
-- Code may not be idiomatic Flutter
+- GameBoardWidget does not adjust responsively to portrait/landscape mode
 
