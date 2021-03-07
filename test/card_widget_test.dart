@@ -123,20 +123,17 @@ void main() {
         isSelectable: true,
         cardFaceAssetPath: cardFaceAssetPath,
       );
+      GameCubit testGameCubit = MockGameCubit();
 
-      int callCount = 0;
-      Function countingCallback = (CardModel cardModel) {
-        callCount++;
-      };
       Finder card = await createCardAndTestExists(
         tester,
         testCardModel,
-        countingCallback,
+        testGameCubit,
       );
 
       await tester.tap(card);
       await tester.pumpAndSettle(Duration(seconds: 1));
-      // expect(callCount, 1); TODO: Remove with callback; replace with mock cubit check?
+      verify(testGameCubit.cardSelected(testCardModel));
     },
   );
 
@@ -149,20 +146,17 @@ void main() {
         isSelectable: false,
         cardFaceAssetPath: cardFaceAssetPath,
       );
+      GameCubit testGameCubit = MockGameCubit();
 
-      int callCount = 0;
-      Function countingCallback = (CardModel cardModel) {
-        callCount++;
-      };
       Finder card = await createCardAndTestExists(
         tester,
         testCardModel,
-        countingCallback,
+        testGameCubit,
       );
 
       await tester.tap(card);
       await tester.pumpAndSettle(Duration(seconds: 1));
-      // expect(callCount, 0); // TODO: Remove with callback; replace with mock cubit check?
+      verifyNever(testGameCubit.cardSelected(testCardModel));
     },
   );
 }
@@ -172,8 +166,7 @@ Future createCardAndTestPredicates(
   CardModel testCardModel,
   List<WidgetPredicate> predicates,
 ) async {
-  Function emptyCallback = () {};
-  await createCardAndTestExists(tester, testCardModel, emptyCallback);
+  await createCardAndTestExists(tester, testCardModel, MockGameCubit());
 
   // Verify predicates each find a widget
   for (WidgetPredicate predicate in predicates) {
@@ -186,18 +179,17 @@ class MockGameCubit extends Mock implements GameCubit {}
 Future<Finder> createCardAndTestExists(
   WidgetTester tester,
   CardModel testCardModel,
-  Function selectionCallback,
+  GameCubit mockGameCubit,
 ) async {
   // Build a skeleton app with the card under test and trigger a frame.
   await tester.pumpWidget(
     MaterialApp(
       home: Scaffold(
         body: BlocProvider<GameCubit>(
-          create: (_) => MockGameCubit(),
+          create: (_) => mockGameCubit,
           child: CardWidget(
             key: Key(cardKeyId),
             cardModel: testCardModel,
-            selectionCallback: selectionCallback,
           ),
         ),
       ),

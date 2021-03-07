@@ -81,14 +81,20 @@ class GameModel {
       cards: cards,
       state: GameMachineState.newGame,
       cardMatchCount: 0,
-      announcement: _announceCardLayout(layoutWidth, cards),
+      announcement: _announceCardLayout(layoutWidth, layoutHeight, cards),
     );
   }
 
   /// Announce the full face-up card layout for accessibility.
-  static String _announceCardLayout(int boardWidth, List<CardModel> cards) {
-    // Announce the game cards.
-    List<String> messages = [' The game shows the following cards:'];
+  static String _announceCardLayout(
+    int boardWidth,
+    int boardHeight,
+    List<CardModel> cards,
+  ) {
+    // Announce the game layout dimensions and cards.
+    List<String> messages = [
+      ' The game shows a grid of cards with $boardHeight rows and $boardWidth columns. The cards are:'
+    ];
     messages.addAll(cards.asMap().map((int index, CardModel card) {
       final String rowId = index % boardWidth == 0
           ? ' row ${(index / boardWidth).floor() + 1}:'
@@ -100,7 +106,7 @@ class GameModel {
     }).values);
 
     String announcement = messages.join('');
-    print('GameStateMachine: _announceCardLayout(): $announcement');
+    // print('GameModel: _announceCardLayout(): $announcement');
     return announcement;
   }
 

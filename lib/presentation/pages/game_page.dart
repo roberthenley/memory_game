@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/models/game_model.dart';
 import '../../orchestration/game_cubit.dart';
 import '../../orchestration/game_state.dart';
-import '../widgets/stateless_game_board_widget.dart';
+import '../widgets/game_board_widget.dart';
 
 /// Game page widget.
 ///
@@ -19,10 +19,14 @@ class GamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     bool timedGame = !MediaQuery.of(context).accessibleNavigation;
     return BlocProvider<GameCubit>(
-      create: (_) => GameCubit(
-        initialGameModel: initialGameModel,
-        timedGame: timedGame,
-      ),
+      create: (_) {
+        GameCubit gameCubit = GameCubit(
+          initialGameModel: initialGameModel,
+          timedGame: timedGame,
+        );
+        _announce(gameCubit.state.gameModel.announcement);
+        return gameCubit;
+      },
       child: Scaffold(
         appBar: AppBar(title: Text('Memory')),
         body: SafeArea(
@@ -32,7 +36,7 @@ class GamePage extends StatelessWidget {
             },
             listenWhen: (oldState, newState) =>
                 _hasNewAnnouncement(oldState, newState),
-            builder: (builderContext, state) => StatelessGameBoardWidget(
+            builder: (builderContext, state) => GameBoardWidget(
               timedGame: timedGame,
             ),
           ),

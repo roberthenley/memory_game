@@ -14,11 +14,9 @@ class CardWidget extends StatelessWidget {
   const CardWidget({
     Key key,
     @required this.cardModel,
-    this.selectionCallback, //TODO: Remove
   }) : super(key: key);
 
   final CardModel cardModel;
-  final Function selectionCallback; // TODO: Remove
 
   // Card back image path is 'assets/svg/question-mark-round-line.svg'
   static final SvgPicture faceDownCard = SvgPicture.asset(
@@ -67,7 +65,6 @@ class CardWidget extends StatelessWidget {
         onTap: () {
           if (cardModel.isSelectable) {
             _onCardSelected(context);
-            // selectionCallback(cardModel); TODO: Remove
           }
         },
       ),

@@ -9,8 +9,8 @@ import 'card_widget.dart';
 import 'score_display_widget.dart';
 import 'timer_display_widget.dart';
 
-class StatelessGameBoardWidget extends StatelessWidget {
-  StatelessGameBoardWidget({@required this.timedGame});
+class GameBoardWidget extends StatelessWidget {
+  GameBoardWidget({@required this.timedGame});
   final bool timedGame;
 
   @override

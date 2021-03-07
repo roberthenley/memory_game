@@ -36,22 +36,24 @@ class GameCubit extends Cubit<GameState> {
           newState: GameMachineState.noCardsSelected,
         ),
         gameStarted: true,
-        timer: Timer.periodic(
-          const Duration(seconds: 1),
-          (Timer timer) async {
-            // print('time remaining: $_timeRemaining');
-            if (state.gameModel.state == GameMachineState.wonGame) {
-              // If game has been won, stop the timer.
-              timer.cancel();
-            } else if (state.timeRemaining == 0) {
-              // print('time expired; transitioning to lostGame state');
-              timer.cancel();
-              _newGameMachineState(GameMachineState.lostGame);
-            } else {
-              _timerTickDown();
-            }
-          },
-        ),
+        timer: (state.timedGame)
+            ? Timer.periodic(
+                const Duration(seconds: 1),
+                (Timer timer) async {
+                  // print('time remaining: $_timeRemaining');
+                  if (state.gameModel.state == GameMachineState.wonGame) {
+                    // If game has been won, stop the timer.
+                    timer.cancel();
+                  } else if (state.timeRemaining == 0) {
+                    // print('time expired; transitioning to lostGame state');
+                    timer.cancel();
+                    _newGameMachineState(GameMachineState.lostGame);
+                  } else {
+                    _timerTickDown();
+                  }
+                },
+              )
+            : null,
       ));
 
   void _newGameMachineState(GameMachineState newGameState) => emit(
