@@ -77,7 +77,7 @@ Run the integration tests with:
 - DONE: Widget tests for GameBoardWidget
 - DONE: Integration tests using new integration_test package
 - DONE: Refactor to BLoC pattern (using a Cubit)
-- Add custom app icon
+- DONE: Add custom app icon
 
 ## Additional features TBD
 - Convert to Flutter 2 with null safety
