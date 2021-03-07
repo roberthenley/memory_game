@@ -4,7 +4,7 @@ The game of Memory, implemented in Flutter.
 
 This is a bare-bones implementation of the game of Memory:
 - The home page allows the player to start a new game with 2x2, 2x3, or 3x4 card layouts.
-- The game page displays the given card layout (with dimensions reversed in landscape mode).
+- The game page displays the given card layout.
 - There are 20 different card images of which 2, 3, or 6 are randomly selected for each game.
 - Two copies of each card are included in the layout in random order.
 - The game displays all cards face-up for 5 seconds, then flips the cards face-down and starts a game timer scaled to the number of cards. 
@@ -79,10 +79,6 @@ Run the integration tests with:
 - DONE: Refactor to BLoC pattern (using a Cubit)
 - Add custom app icon
 
-## Potential refactorings / design decisions TBD
-- Use bdd_widget_tests package for widget testing in Gherkin?
-- Performance: will card model state transitions that don't effect visibility cost too much to rebuild?
-
 ## Additional features TBD
 - Convert to Flutter 2 with null safety
 - Improve win/loss notification UI
@@ -93,6 +89,7 @@ Run the integration tests with:
 - Persistent application state
 - Mute the white/black color contrast slightly
 - Support Dark Mode
+- Use bdd_widget_tests package for widget testing in Gherkin?
 - Expand integration tests
 
 ## Known issues
