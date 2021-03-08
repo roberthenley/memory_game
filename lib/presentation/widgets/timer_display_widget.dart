@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class TimerDisplayWidget extends StatelessWidget {
   const TimerDisplayWidget({
-    Key key,
-    @required int timeRemaining,
-  })  : _timeRemaining = timeRemaining,
+    Key? key,
+    required int timeRemaining,
+  })   : _timeRemaining = timeRemaining,
         super(key: key);
 
   final int _timeRemaining;

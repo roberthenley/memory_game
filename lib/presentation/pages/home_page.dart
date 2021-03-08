@@ -29,9 +29,9 @@ class HomePage extends StatelessWidget {
 
 class NewGameButton extends StatelessWidget {
   const NewGameButton({
-    Key key,
-    @required this.width,
-    @required this.height,
+    Key? key,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   final int width;

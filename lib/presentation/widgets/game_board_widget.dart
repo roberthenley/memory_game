@@ -10,11 +10,12 @@ import 'score_display_widget.dart';
 import 'timer_display_widget.dart';
 
 class GameBoardWidget extends StatelessWidget {
-  GameBoardWidget({@required this.timedGame});
+  GameBoardWidget({required this.timedGame});
   final bool timedGame;
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     GameCubit gameCubit = BlocProvider.of<GameCubit>(context);
     GameState state = gameCubit.state;
 
@@ -60,15 +61,15 @@ class GameBoardWidget extends StatelessWidget {
         final String message = gameModel.state == GameMachineState.wonGame
             ? 'You won!'
             : 'Game over.';
-        final scaffold = Scaffold.of(context);
-        scaffold.showSnackBar(
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text(message),
             duration: Duration(days: 365),
             action: SnackBarAction(
                 label: 'HOME',
                 onPressed: () {
-                  scaffold.hideCurrentSnackBar();
+                  scaffoldMessenger.hideCurrentSnackBar();
                   Navigator.pop(context);
                 }),
           ),

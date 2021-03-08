@@ -2,15 +2,14 @@ import 'package:memory_game/domain/game_logic/game_machine_state.dart';
 import 'package:memory_game/domain/models/card_faces.dart';
 import 'package:memory_game/domain/models/card_model.dart';
 import 'package:memory_game/domain/models/game_model.dart';
-import 'package:meta/meta.dart';
 
 class GameStateMachine {
   /// Set the next game machine state from a new GameState value.
   ///
   /// This method is called by game timers.
   static GameModel setNextState({
-    @required GameModel model,
-    GameMachineState newState,
+    required GameModel model,
+    required GameMachineState newState,
   }) =>
       _nextState(model: model, newState: newState);
 
@@ -18,8 +17,8 @@ class GameStateMachine {
   ///
   /// This method is called when the user selects a card.
   static GameModel nextStateFromCard({
-    @required GameModel model,
-    CardModel cardSelected,
+    required GameModel model,
+    required CardModel cardSelected,
   }) =>
       _nextState(model: model, cardSelected: cardSelected);
 
@@ -28,11 +27,12 @@ class GameStateMachine {
   /// This method is private and guarded against calls with both a new state and
   /// a card selection.
   static GameModel _nextState({
-    @required GameModel model,
-    GameMachineState newState,
-    CardModel cardSelected,
+    required GameModel model,
+    GameMachineState? newState,
+    CardModel? cardSelected,
   }) {
     assert(newState == null || cardSelected == null);
+    assert(newState != null || cardSelected != null);
     // print(
     //   '_nextState: current state: ${model.state}, new state: $newState, cardSelected: ${cardSelected?.cardFaceAssetPath ?? "null"}',
     // );
@@ -68,7 +68,7 @@ class GameStateMachine {
     if (model.state == GameMachineState.twoCardsSelectedNotMatching &&
         newState == GameMachineState.noCardsSelected) {
       // print('_nextState case 5: flip 2 non-matching cards face-down');
-      return _handleFlippingNonMatchingCardsFaceDown(model, newState);
+      return _handleFlippingNonMatchingCardsFaceDown(model, newState!);
     }
     if (model.state == GameMachineState.wonGame) {
       // print('_nextState case 6: game won already, no-op');
@@ -119,8 +119,10 @@ class GameStateMachine {
   /// layer has to set a timer to flip the cards back over and continue.
   static GameModel _handleSecondCardSelection(
       GameModel model, CardModel cardSelected) {
-    CardModel firstCardSelected = model.getFirstSelectedCard();
-    assert(firstCardSelected != null);
+    List<CardModel> cards = model.getAllSelectedCards().toList(growable: false);
+    assert(cards.length == 1);
+    CardModel firstCardSelected =
+        cards.first; // Note: Will crash if no selected cards.
     // print(
     //     '_handleSecondCardSelection: firstCardSelected = ${firstCardSelected?.cardFaceAssetPath ?? "none"}');
     bool isMatch =

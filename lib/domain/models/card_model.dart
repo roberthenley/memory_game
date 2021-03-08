@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 /// Models the state of a game card.
 class CardModel {
   CardModel({
@@ -7,7 +5,7 @@ class CardModel {
     this.isMatched = false,
     this.isSelectable = false,
     this.isSelected = false,
-    @required this.cardFaceAssetPath,
+    required this.cardFaceAssetPath,
   });
 
   final bool isFaceUp;
@@ -17,11 +15,11 @@ class CardModel {
   final String cardFaceAssetPath;
 
   CardModel copyWith({
-    bool isFaceUp,
-    bool isMatched,
-    bool isSelectable,
-    bool isSelected,
-    String cardFace,
+    bool? isFaceUp,
+    bool? isMatched,
+    bool? isSelectable,
+    bool? isSelected,
+    String? cardFace,
   }) =>
       CardModel(
         isFaceUp: isFaceUp ?? this.isFaceUp,

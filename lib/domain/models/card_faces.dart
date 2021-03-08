@@ -45,7 +45,7 @@ class CardFaces {
   /// Used for both face-up card Semantics labelling and in announcements for
   /// accessibility.
   static String getCardName(String cardPath) {
-    String cardName = _cardPathNames[cardPath];
+    String cardName = _cardPathNames[cardPath] ?? "unknown";
     // print('getCardName: ${cardName}');
     return cardName;
   }

@@ -12,8 +12,8 @@ import '../../domain/models/card_model.dart';
 /// Encodes the card back picture at the class level so it is reused.
 class CardWidget extends StatelessWidget {
   const CardWidget({
-    Key key,
-    @required this.cardModel,
+    Key? key,
+    required this.cardModel,
   }) : super(key: key);
 
   final CardModel cardModel;

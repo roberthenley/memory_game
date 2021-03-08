@@ -9,7 +9,7 @@ import 'package:memory_game/presentation/pages/game_page.dart';
 import 'package:memory_game/presentation/widgets/card_widget.dart';
 
 void main() {
-  GameModel startingGameModel;
+  late GameModel startingGameModel;
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   /// Set up starting game model as a 2x2 card grid in newGame state.
@@ -41,10 +41,6 @@ void main() {
       durationSeconds: 60,
       initialFaceUpSeconds: 5,
     );
-  });
-
-  tearDown(() {
-    startingGameModel = null;
   });
 
   testWidgets('Play 2x2 game to win', (WidgetTester tester) async {

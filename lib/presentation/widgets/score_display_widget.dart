@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ScoreDisplayWidget extends StatelessWidget {
   const ScoreDisplayWidget({
-    Key key,
-    @required int score,
-    @required int total,
-  })  : _score = score,
+    Key? key,
+    required int score,
+    required int total,
+  })   : _score = score,
         _total = total,
         super(key: key);
 

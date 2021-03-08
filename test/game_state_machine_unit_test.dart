@@ -6,7 +6,7 @@ import 'package:memory_game/domain/models/game_model.dart';
 import 'package:test/test.dart';
 
 void main() {
-  GameModel startingGameModel;
+  late GameModel startingGameModel;
 
   /// Set up starting game model as a 2x2 card grid in newGame state.
   setUp(() {
@@ -35,10 +35,6 @@ void main() {
       state: GameMachineState.newGame,
       cardMatchCount: 0,
     );
-  });
-
-  tearDown(() {
-    startingGameModel = null;
   });
 
   group('Happy path transitions do what is expected', () {

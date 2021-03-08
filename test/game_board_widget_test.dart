@@ -12,7 +12,7 @@ import 'package:memory_game/presentation/widgets/game_board_widget.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
-  GameCubit mockGameCubit;
+  late MockGameCubit mockGameCubit;
 
   /// Set up starting game model as a 2x2 card grid in newGame state.
   setUp(() {
@@ -55,7 +55,7 @@ void main() {
   });
 
   tearDown(() {
-    mockGameCubit = null;
+    mockGameCubit.close();
   });
 
   testWidgets(

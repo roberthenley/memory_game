@@ -1,28 +1,27 @@
 import 'dart:async';
 
 import 'package:memory_game/domain/models/game_model.dart';
-import 'package:meta/meta.dart';
 
 class GameState {
   GameState({
-    @required this.gameModel,
-    this.timedGame,
-    this.gameStarted,
-    @required this.timeRemaining,
+    required this.gameModel,
+    this.timedGame = false,
+    this.gameStarted = false,
+    required this.timeRemaining,
     this.timer,
   });
   GameModel gameModel;
-  bool timedGame = false;
-  Timer timer;
-  bool gameStarted = false;
+  bool timedGame;
+  Timer? timer;
+  bool gameStarted;
   int timeRemaining;
 
   GameState copyWith({
-    GameModel gameModel,
-    bool gameStarted,
-    int timeRemaining,
-    Timer timer,
-    bool timedGame,
+    GameModel? gameModel,
+    bool? gameStarted,
+    int? timeRemaining,
+    Timer? timer,
+    bool? timedGame,
   }) =>
       GameState(
         gameModel: gameModel ?? this.gameModel,

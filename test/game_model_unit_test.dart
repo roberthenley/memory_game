@@ -5,7 +5,7 @@ import 'package:memory_game/domain/models/game_model.dart';
 import 'package:test/test.dart';
 
 void main() {
-  GameModel startingGameModel;
+  late GameModel startingGameModel;
 
   /// Set up starting game model as a 2x2 card grid in newGame state.
   setUp(() {
@@ -34,10 +34,6 @@ void main() {
       state: GameMachineState.newGame,
       cardMatchCount: 0,
     );
-  });
-
-  tearDown(() {
-    startingGameModel = null;
   });
 
   test('No game duration defaults to 6 seconds per card', () {
@@ -190,8 +186,8 @@ void main() {
     expect(newGame.cards, startingGameModel.cards);
   });
 
-  test('getFirstSelectedCard returns null if no cards are selected', () {
-    expect(startingGameModel.getFirstSelectedCard(), null);
+  test('getFirstSelectedCard throws if no cards are selected', () {
+    expect(() => startingGameModel.getFirstSelectedCard(), throwsException);
   });
 
   test('getFirstSelectedCard returns first selected card', () {

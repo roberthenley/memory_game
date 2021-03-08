@@ -78,9 +78,9 @@ Run the integration tests with:
 - DONE: Integration tests using new integration_test package
 - DONE: Refactor to BLoC pattern (using a Cubit)
 - DONE: Add custom app icon
+- DONE: Convert to Flutter 2 with null safety
 
 ## Additional features TBD
-- Convert to Flutter 2 with null safety
 - Improve win/loss notification UI
 - Adjustable play difficulty (by adjusting game time and face-up display time)
 - Add Golden tests?

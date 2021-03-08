@@ -35,8 +35,11 @@ void main() {
           (Widget widget) {
             if (widget is! Card) return false;
             Card card = widget;
-            if (card.shape is! RoundedRectangleBorder) return false;
-            RoundedRectangleBorder border = card.shape;
+            if (card.shape == null || card.shape is! RoundedRectangleBorder) {
+              return false;
+            }
+            RoundedRectangleBorder border =
+                card.shape as RoundedRectangleBorder;
             return border.side.color == CardWidget.nonHighlightBorderColor;
           },
         ],
@@ -69,8 +72,11 @@ void main() {
           (Widget widget) {
             if (widget is! Card) return false;
             Card card = widget;
-            if (card.shape is! RoundedRectangleBorder) return false;
-            RoundedRectangleBorder border = card.shape;
+            if (card.shape == null || card.shape is! RoundedRectangleBorder) {
+              return false;
+            }
+            RoundedRectangleBorder border =
+                card.shape as RoundedRectangleBorder;
             return border.side.color == CardWidget.nonHighlightBorderColor;
           },
         ],
@@ -105,8 +111,11 @@ void main() {
           (Widget widget) {
             if (widget is! Card) return false;
             Card card = widget;
-            if (card.shape is! RoundedRectangleBorder) return false;
-            RoundedRectangleBorder border = card.shape;
+            if (card.shape == null || card.shape is! RoundedRectangleBorder) {
+              return false;
+            }
+            RoundedRectangleBorder border =
+                card.shape as RoundedRectangleBorder;
             return border.side.color == CardWidget.highlightBorderColor;
           },
         ],

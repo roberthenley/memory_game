@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import '../game_logic/game_machine_state.dart';
 import 'card_faces.dart';
 import 'card_model.dart';
@@ -15,11 +13,11 @@ class GameModel {
   final int layoutHeight;
   final int initialFaceUpSeconds;
   final int nonMatchingCardsFaceUpSeconds;
-  final int _durationSeconds;
+  final int? _durationSeconds;
   final List<CardModel> cards;
   final GameMachineState state;
   final int cardMatchCount;
-  final String announcement;
+  final String? announcement;
 
   int get numberOfCards {
     return layoutHeight * layoutWidth;
@@ -39,10 +37,10 @@ class GameModel {
     this.initialFaceUpSeconds = DefaultGameSettings.initialFaceUpSeconds,
     this.nonMatchingCardsFaceUpSeconds =
         DefaultGameSettings.nonMatchingCardsFaceUpSeconds,
-    int durationSeconds,
-    @required this.cards,
-    @required this.state,
-    @required this.cardMatchCount,
+    int? durationSeconds,
+    required this.cards,
+    required this.state,
+    required this.cardMatchCount,
     this.announcement,
   }) : this._durationSeconds = durationSeconds;
 
@@ -58,7 +56,7 @@ class GameModel {
     int initialFaceUpSeconds = DefaultGameSettings.initialFaceUpSeconds,
     int nonMatchingCardsFaceUpSeconds =
         DefaultGameSettings.nonMatchingCardsFaceUpSeconds,
-    int durationSeconds,
+    int? durationSeconds,
   }) {
     assert((layoutWidth * layoutHeight) % 2 == 0);
 
@@ -115,13 +113,13 @@ class GameModel {
   ///
   /// Clears any existing announcement.
   GameModel copyWithCardFlags({
-    GameMachineState newState,
-    int newCardMatchCount,
-    bool isFaceUp,
-    bool isMatched,
-    bool isSelectable,
-    bool isSelected,
-    String announcement,
+    GameMachineState? newState,
+    int? newCardMatchCount,
+    bool? isFaceUp,
+    bool? isMatched,
+    bool? isSelectable,
+    bool? isSelected,
+    String? announcement,
   }) {
     List<CardModel> newCards = [];
     for (CardModel card in cards) {
@@ -145,10 +143,10 @@ class GameModel {
   ///
   /// Clears any existing announcement.
   GameModel copyWithNewCards({
-    @required GameMachineState newState,
-    @required Map<CardModel, CardModel> replacementCards,
-    int newMatchCount,
-    String announcement,
+    required GameMachineState newState,
+    required Map<CardModel, CardModel> replacementCards,
+    int? newMatchCount,
+    String? announcement,
   }) {
     // replace the modified cards and set the new game state
     return this.copyWith(
@@ -186,8 +184,7 @@ class GameModel {
 
   /// Get the first selected card.
   CardModel getFirstSelectedCard() {
-    return cards.firstWhere((element) => element.isSelected,
-        orElse: () => null);
+    return cards.firstWhere((element) => element.isSelected);
   }
 
   /// Get all selected cards.
@@ -202,10 +199,10 @@ class GameModel {
   /// Preserves any existing announcement, so override that value if you want it
   /// cleared in the resulting copy.
   GameModel copyWith({
-    List<CardModel> cards,
-    GameMachineState state,
-    int cardMatchCount,
-    String announcement,
+    List<CardModel>? cards,
+    GameMachineState? state,
+    int? cardMatchCount,
+    String? announcement,
   }) {
     if (cards != null) {
       assert(layoutWidth * layoutHeight == cards.length);

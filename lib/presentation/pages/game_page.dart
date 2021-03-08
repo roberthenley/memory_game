@@ -13,7 +13,7 @@ import '../widgets/game_board_widget.dart';
 class GamePage extends StatelessWidget {
   final GameModel initialGameModel;
 
-  GamePage({this.initialGameModel});
+  GamePage({required this.initialGameModel});
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +60,10 @@ class GamePage extends StatelessWidget {
   }
 
   /// Announce messages for accessibility.
-  void _announce(String message) async {
+  void _announce(String? message) async {
     if (message?.isNotEmpty ?? false) {
       // print('GamePage announcing: $message');
-      await SemanticsService.announce(message, TextDirection.ltr);
+      await SemanticsService.announce(message!, TextDirection.ltr);
     }
   }
 }

@@ -5,17 +5,16 @@ import 'package:memory_game/domain/game_logic/game_machine_state.dart';
 import 'package:memory_game/domain/game_logic/game_state_machine.dart';
 import 'package:memory_game/domain/models/card_model.dart';
 import 'package:memory_game/domain/models/game_model.dart';
-import 'package:meta/meta.dart';
 
 import 'game_state.dart';
 
 class GameCubit extends Cubit<GameState> {
   GameCubit({
-    @required GameModel initialGameModel,
-    @required bool timedGame,
+    required GameModel initialGameModel,
+    required bool timedGame,
   }) : super(
           GameState(
-            gameModel: initialGameModel ?? GameModel.newGame(),
+            gameModel: initialGameModel,
             timeRemaining: initialGameModel.gameDurationSeconds,
             timedGame: timedGame,
           ),
