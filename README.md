@@ -79,6 +79,8 @@ Run the integration tests with:
 - DONE: Refactor to BLoC pattern (using a Cubit)
 - DONE: Add custom app icon
 - DONE: Convert to Flutter 2 with null safety
+- Refactor accessibility notifications into their own widget.
+- Push BlocConsumer/Provider/Listener from down to leaf nodes (including the accessibility notification widget).
 
 ## Additional features TBD
 - Improve win/loss notification UI
